@@ -36,10 +36,19 @@ android {
     }
     buildFeatures {
         compose = true
+//        viewBinding = true
+//        dataBinding = true
     }
 }
 
 dependencies {
+    val lifecycle_version = "2.8.7"
+    val nav_version = "2.8.6"
+
+    implementation(libs.androidx.lifecycle.viewmodel.ktx)
+    implementation(libs.androidx.lifecycle.livedata.ktx)
+    implementation(libs.androidx.constraintlayout)
+    implementation(libs.androidx.navigation.compose)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
