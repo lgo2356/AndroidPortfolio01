@@ -39,7 +39,9 @@ fun UserInput(onMessageSent: (String) -> Unit) {
         onTextFieldFocused = { focused ->
             textFieldFocusState = focused
         },
-        onMessageSent = onMessageSent,
+        onMessageSent = {
+            onMessageSent(textState.text)
+        },
         focusState = textFieldFocusState
     )
 }
@@ -80,7 +82,7 @@ private fun UserInputText(
         Button(
             modifier = Modifier,
             onClick = {
-                onMessageSent.invoke("ABS")
+                onMessageSent(textFieldValue.text)
             }
         ) {
             Text("Send")
