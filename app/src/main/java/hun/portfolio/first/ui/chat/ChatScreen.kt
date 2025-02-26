@@ -10,14 +10,15 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import hun.portfolio.first.data.messages
 
 @Composable
 fun ChatScreen(
     messages: List<MessageData>,
-    modifier: Modifier
+    onMessageSent: (String) -> Unit,
+    modifier: Modifier = Modifier
 ) {
     Scaffold() { paddingValue ->
         Column(
@@ -31,18 +32,19 @@ fun ChatScreen(
                     .padding(horizontal = 16.dp)
                     .weight(1f)
             )
-            UserInput(modifier = modifier) {
-
-            }
+            UserInput(
+                onMessageSent = onMessageSent
+            )
         }
     }
 }
 
 @Preview
 @Composable
-fun ChatScreenPreview() {
+private fun ChatScreenPreview() {
     ChatScreen(
-        messages = hun.portfolio.first.data.messages,
+        messages = messages,
+        onMessageSent = {},
         modifier = Modifier.fillMaxSize()
     )
 }

@@ -26,10 +26,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun UserInput(
-    modifier: Modifier = Modifier,
-    onMessageSent: (String) -> Unit
-) {
+fun UserInput(onMessageSent: (String) -> Unit) {
     var textState by rememberSaveable(stateSaver = TextFieldValue.Saver) {
         mutableStateOf(TextFieldValue())
     }
@@ -42,7 +39,7 @@ fun UserInput(
         onTextFieldFocused = { focused ->
             textFieldFocusState = focused
         },
-        onMessageSent = {},
+        onMessageSent = onMessageSent,
         focusState = textFieldFocusState
     )
 }
@@ -77,13 +74,14 @@ private fun UserInputText(
                 onTextFieldFocused,
                 keyboardType,
                 focusState,
-                onMessageSent,
                 Modifier.fillMaxWidth()
             )
         }
         Button(
             modifier = Modifier,
-            onClick = {}
+            onClick = {
+                onMessageSent.invoke("ABS")
+            }
         ) {
             Text("Send")
         }
@@ -97,7 +95,6 @@ private fun BoxScope.UserInputTextField(
     onTextFieldFocused: (Boolean) -> Unit,
     keyboardType: KeyboardType,
     focusState: Boolean,
-    onMessageSent: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
     var lastFocusState by remember { mutableStateOf(false) }

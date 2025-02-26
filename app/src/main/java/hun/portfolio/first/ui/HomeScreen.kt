@@ -45,7 +45,7 @@ fun HomeScreen(
 @Preview
 @Composable
 fun PortfolioAppPreview() {
-    PortfolioApp()
+//    PortfolioApp()
 }
 
 @Composable

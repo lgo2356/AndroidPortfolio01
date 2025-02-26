@@ -66,7 +66,7 @@ fun Message(
 
 @Preview
 @Composable
-fun MessageMePreview() {
+private fun MessageMePreview() {
     Message(
         message = messageByMe,
         isUserMe = true,
@@ -77,7 +77,7 @@ fun MessageMePreview() {
 
 @Preview
 @Composable
-fun MessageOtherPreview() {
+private fun MessageOtherPreview() {
     Message(
         message = messageByOther,
         isUserMe = false,
@@ -108,13 +108,13 @@ private fun AuthorNameTimestamp(message: MessageData) {
 
 @Preview
 @Composable
-fun AuthorNameTimestampMe() {
+private fun AuthorNameTimestampMe() {
     AuthorNameTimestamp(messageByMe)
 }
 
 @Preview
 @Composable
-fun AuthorNameTimestampOther() {
+private fun AuthorNameTimestampOther() {
     AuthorNameTimestamp(messageByOther)
 }
 

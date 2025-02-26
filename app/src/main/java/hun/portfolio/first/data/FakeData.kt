@@ -1,12 +1,13 @@
 package hun.portfolio.first.data
 
-import hun.portfolio.first.R
-import hun.portfolio.first.ui.chat.MessageData
+import androidx.compose.runtime.toMutableStateList
 import hun.portfolio.first.data.EMOJIS.EMOJI_CLOUDS
 import hun.portfolio.first.data.EMOJIS.EMOJI_FLAMINGO
 import hun.portfolio.first.data.EMOJIS.EMOJI_MELTING
-import hun.portfolio.first.data.EMOJIS.EMOJI_POINTS
 import hun.portfolio.first.data.EMOJIS.EMOJI_PINK_HEART
+import hun.portfolio.first.data.EMOJIS.EMOJI_POINTS
+import hun.portfolio.first.ui.chat.ChatUiState
+import hun.portfolio.first.ui.chat.MessageData
 
 val messages = listOf(
     MessageData(
@@ -89,3 +90,7 @@ object EMOJIS {
     // ANDROID 12.0  👉
     const val EMOJI_POINTS = " \uD83D\uDC49"
 }
+
+val fakeChatUiState = ChatUiState(
+    messages = messages.toMutableStateList()
+)
