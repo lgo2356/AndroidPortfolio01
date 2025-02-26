@@ -25,15 +25,18 @@ fun PortfolioNavGraph(
             route = PortfolioDestination.HOME_ROUTE
         ) {
             HomeScreen(
-                navigateToChat,
-                modifier
+                modifier,
+                navigateToChat
             )
         }
 
         composable(
             route = PortfolioDestination.CHAT_ROUTE
         ) {
-            ChatScreen(modifier)
+            ChatScreen(
+                messages = hun.portfolio.first.data.messages,
+                modifier = modifier
+            )
         }
     }
 }
