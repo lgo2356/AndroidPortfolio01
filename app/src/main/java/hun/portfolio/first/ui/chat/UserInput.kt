@@ -37,7 +37,6 @@ fun UserInput(onMessageSent: (String) -> Unit) {
     UserInputText(
         onTextChanged = { textState = it },
         textFieldValue = textState,
-        keyboardShown = true,
         onTextFieldFocused = { focused ->
             textFieldFocusState = focused
         },
@@ -60,7 +59,6 @@ private fun UserInputText(
     keyboardType: KeyboardType = KeyboardType.Text,
     onTextChanged: (TextFieldValue) -> Unit,
     textFieldValue: TextFieldValue,
-    keyboardShown: Boolean,
     onTextFieldFocused: (Boolean) -> Unit,
     onMessageSent: (String) -> Unit,
     focusState: Boolean
@@ -84,10 +82,8 @@ private fun UserInputText(
             )
         }
         Button(
-            modifier = Modifier,
-            onClick = {
-                onMessageSent(textFieldValue.text)
-            }
+            onClick = { onMessageSent(textFieldValue.text) },
+            modifier = Modifier
         ) {
             Text("Send")
         }

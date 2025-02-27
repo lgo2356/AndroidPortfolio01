@@ -20,7 +20,7 @@ fun ChatScreen(
     onMessageSent: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Scaffold() { paddingValue ->
+    Scaffold { paddingValue ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
