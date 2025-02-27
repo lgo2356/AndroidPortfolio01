@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
@@ -20,6 +21,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
@@ -41,6 +43,7 @@ fun UserInput(onMessageSent: (String) -> Unit) {
         },
         onMessageSent = {
             onMessageSent(textState.text)
+            textState = TextFieldValue()
         },
         focusState = textFieldFocusState
     )
@@ -71,12 +74,13 @@ private fun UserInputText(
     ) {
         Box(Modifier.weight(1f)) {
             UserInputTextField(
-                textFieldValue,
-                onTextChanged,
-                onTextFieldFocused,
-                keyboardType,
-                focusState,
-                Modifier.fillMaxWidth()
+                textFieldValue = textFieldValue,
+                onTextChanged = onTextChanged,
+                onTextFieldFocused = onTextFieldFocused,
+                keyboardType = keyboardType,
+                focusState = focusState,
+                onMessageSent = onMessageSent,
+                modifier = Modifier.fillMaxWidth()
             )
         }
         Button(
@@ -97,6 +101,7 @@ private fun BoxScope.UserInputTextField(
     onTextFieldFocused: (Boolean) -> Unit,
     keyboardType: KeyboardType,
     focusState: Boolean,
+    onMessageSent: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
     var lastFocusState by remember { mutableStateOf(false) }
@@ -105,8 +110,12 @@ private fun BoxScope.UserInputTextField(
         value = textFieldValue,
         onValueChange = { onTextChanged(it) },
         keyboardOptions = KeyboardOptions(
-            keyboardType = keyboardType
+            keyboardType = keyboardType,
+            imeAction = ImeAction.Send
         ),
+        keyboardActions = KeyboardActions {
+            if (textFieldValue.text.isNotBlank()) onMessageSent(textFieldValue.text)
+        },
         singleLine = true,
         modifier = modifier
             .align(Alignment.CenterStart)
