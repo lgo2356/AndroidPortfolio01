@@ -14,3 +14,7 @@ val Navy = Color(0xFF073042)
 val Blue = Color(0xFF4285F4)
 val LightBlue = Color(0xFFD7EFFE)
 val Chartreuse = Color(0xFFEFF7CF)
+
+val GoogleWhite = Color(0xFFFFFFFF)
+val KakaoYellow = Color(0xFFFAE100)
+val NaverGreen = Color(0xFF03CF5D)

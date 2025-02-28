@@ -41,8 +41,13 @@ fun UserInput(onMessageSent: (String) -> Unit) {
             textFieldFocusState = focused
         },
         onMessageSent = {
-            onMessageSent(textState.text)
-            textState = TextFieldValue()
+            if (textState.text.isNotBlank()) {
+                val text = textState.text
+                textState = TextFieldValue("")
+
+                onMessageSent(text)
+//                textState = TextFieldValue("")
+            }
         },
         focusState = textFieldFocusState
     )
@@ -110,7 +115,7 @@ private fun BoxScope.UserInputTextField(
             imeAction = ImeAction.Send
         ),
         keyboardActions = KeyboardActions {
-            if (textFieldValue.text.isNotBlank()) onMessageSent(textFieldValue.text)
+            onMessageSent(textFieldValue.text)
         },
         singleLine = true,
         modifier = modifier
