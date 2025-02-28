@@ -1,12 +1,16 @@
 package hun.portfolio.first.ui
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.Surface
@@ -14,12 +18,17 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import hun.portfolio.first.R
 import hun.portfolio.first.ui.theme.GoogleWhite
 import hun.portfolio.first.ui.theme.KakaoYellow
 import hun.portfolio.first.ui.theme.NaverGreen
@@ -78,20 +87,26 @@ fun LoginButtonColumn(
             text = "구글 계정으로 로그인",
             textColor = Color.Black,
             backgroundColor = GoogleWhite,
+            icon = R.drawable.google_logo,
+            iconSize = 18.dp,
         ) {
             navigateToChat()
         }
+        Spacer(modifier = Modifier.padding(vertical = 2.dp))
         LoginButton(
             text = "카카오톡 계정으로 로그인",
             textColor = Color.Black,
             backgroundColor = KakaoYellow,
+            icon = R.drawable.kakaotalk_logo,
         ) {
             navigateToChat()
         }
+        Spacer(modifier = Modifier.padding(vertical = 2.dp))
         LoginButton(
             text = "네이버 계정으로 로그인",
             textColor = Color.White,
             backgroundColor = NaverGreen,
+            icon = R.drawable.naver_logo,
         ) {
             navigateToChat()
         }
@@ -103,6 +118,8 @@ fun LoginButton(
     text: String,
     textColor: Color,
     backgroundColor: Color,
+    icon: Int,
+    iconSize: Dp = 24.dp,
     onClick: () -> Unit
 ) {
     ElevatedButton(
@@ -113,11 +130,28 @@ fun LoginButton(
             contentColor = textColor
         )
     ) {
-        Text(
-            text = text,
-            modifier = Modifier.padding(vertical = 4.dp),
-            fontWeight = FontWeight.Bold,
-        )
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Start
+        ) {
+            Image(
+                painter = painterResource(icon),
+                modifier = Modifier
+                    .size(iconSize)
+                    .clip(CircleShape),
+                contentScale = ContentScale.Crop,
+                contentDescription = null,
+            )
+            Text(
+                text = text,
+                modifier = Modifier
+                    .padding(vertical = 4.dp)
+                    .weight(1f),
+                textAlign = TextAlign.Center,
+                fontWeight = FontWeight.Bold,
+            )
+        }
     }
 }
 
@@ -128,6 +162,7 @@ private fun LoginButtonPreview() {
         text = "네이버 계정으로 로그인",
         textColor = Color.White,
         backgroundColor = NaverGreen,
+        icon = R.drawable.naver_logo,
     ) {
 
     }
