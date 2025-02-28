@@ -1,6 +1,7 @@
 package hun.portfolio.first.ui
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -110,6 +111,16 @@ fun LoginButtonColumn(
         ) {
             navigateToChat()
         }
+        Spacer(modifier = Modifier.padding(vertical = 4.dp))
+        Text(
+            text = "비회원 로그인",
+            textAlign = TextAlign.Center,
+            modifier = Modifier.fillMaxWidth()
+                .padding(vertical = 8.dp)
+                .clickable {
+                    navigateToChat()
+                }
+        )
     }
 }
 
