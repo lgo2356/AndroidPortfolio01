@@ -5,8 +5,8 @@ import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import hun.portfolio.first.data.message.MessageEntity
 import hun.portfolio.first.data.message.MessageRepository
-import hun.portfolio.first.data.successOr
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -14,7 +14,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 data class ChatUiState(
-    val messages: SnapshotStateList<MessageData> = mutableStateListOf()
+    val messages: SnapshotStateList<MessageEntity> = mutableStateListOf()
 )
 
 class ChatViewModel(
@@ -27,7 +27,7 @@ class ChatViewModel(
         refreshAll()
     }
 
-    fun addMessage(message: MessageData) {
+    fun addMessage(message: MessageEntity) {
         _uiState.value.messages.add(0, message)
 
         viewModelScope.launch {
@@ -39,7 +39,7 @@ class ChatViewModel(
         viewModelScope.launch {
             val messagesDeferred = async { messageRepository.getMessages() }
 
-            val messages = messagesDeferred.await().successOr(emptyList())
+            val messages = messagesDeferred.await()
 
             _uiState.value.messages.addAll(messages)
         }

@@ -26,10 +26,9 @@ fun PortfolioNavGraph(
         modifier = modifier
     ) {
         composable(route = PortfolioDestination.HOME_ROUTE) {
-            HomeScreen(
-                modifier,
-                navigateToChat
-            )
+            HomeScreen(modifier = modifier) {
+                navigateToChat()
+            }
         }
 
         composable(route = PortfolioDestination.CHAT_ROUTE) {
@@ -37,9 +36,7 @@ fun PortfolioNavGraph(
                 factory = ChatViewModel.provideFactory(appContainer.messageRepository)
             )
 
-            ChatRoute(
-                chatViewModel = chatViewModel
-            )
+            ChatRoute(chatViewModel = chatViewModel)
         }
     }
 }

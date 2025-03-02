@@ -13,7 +13,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.Immutable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -22,15 +21,14 @@ import androidx.compose.ui.layout.LastBaseline
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import hun.portfolio.first.R
+import hun.portfolio.first.data.message.MessageEntity
 import hun.portfolio.first.data.messageByMe
 import hun.portfolio.first.data.messageByOther
 
 @Composable
 fun Message(
-    message: MessageData,
+    message: MessageEntity,
     isUserMe: Boolean,
-    isFirstMessageByAuthor: Boolean,
     isLastMessageByAuthor: Boolean,
 ) {
     val borderColor = MaterialTheme.colorScheme.primary
@@ -70,7 +68,6 @@ private fun MessageMePreview() {
     Message(
         message = messageByMe,
         isUserMe = true,
-        isFirstMessageByAuthor = false,
         isLastMessageByAuthor = true,
     )
 }
@@ -81,13 +78,12 @@ private fun MessageOtherPreview() {
     Message(
         message = messageByOther,
         isUserMe = false,
-        isFirstMessageByAuthor = false,
         isLastMessageByAuthor = false,
     )
 }
 
 @Composable
-private fun AuthorNameTimestamp(message: MessageData) {
+private fun AuthorNameTimestamp(message: MessageEntity) {
     Row {
         Text(
             text = message.author,
@@ -117,11 +113,3 @@ private fun AuthorNameTimestampMe() {
 private fun AuthorNameTimestampOther() {
     AuthorNameTimestamp(messageByOther)
 }
-
-@Immutable
-data class MessageData(
-    val author: String,
-    val content: String,
-    val timestamp: String,
-    val authorImage: Int = if (author == "me") R.drawable.ali else R.drawable.someone_else,
-)

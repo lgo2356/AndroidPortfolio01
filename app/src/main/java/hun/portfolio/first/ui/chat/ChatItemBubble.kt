@@ -10,6 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import hun.portfolio.first.data.message.MessageEntity
 import hun.portfolio.first.data.messageByMe
 import hun.portfolio.first.data.messageByOther
 
@@ -17,7 +18,7 @@ private val chatBubbleShape = RoundedCornerShape(4.dp, 20.dp, 20.dp, 20.dp)
 
 @Composable
 fun ChatItemBubble(
-    message: MessageData,
+    message: MessageEntity,
     isUserMe: Boolean,
 ) {
     val bubbleBgColor = if (isUserMe) {

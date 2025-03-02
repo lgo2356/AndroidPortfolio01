@@ -12,11 +12,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import hun.portfolio.first.data.message.MessageEntity
 import hun.portfolio.first.data.messages
 
 @Composable
 fun ChatScreen(
-    messages: List<MessageData>,
+    messages: List<MessageEntity>,
     onMessageSent: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -51,23 +52,20 @@ private fun ChatScreenPreview() {
 
 @Composable
 fun Messages(
-    messages: List<MessageData>,
+    messages: List<MessageEntity>,
     modifier: Modifier
 ) {
     Surface(modifier = modifier) {
         LazyColumn(reverseLayout = true) {
             for (index in messages.indices) {
-                val prevAuthor = messages.getOrNull(index - 1)?.author
                 val nextAuthor = messages.getOrNull(index + 1)?.author
                 val content = messages[index]
-                val isFirstMessageByAuthor = prevAuthor != content.author
                 val isLastMessageByAuthor = nextAuthor != content.author
 
                 item {
                     Message(
                         message = content,
                         isUserMe = content.author == "me",
-                        isFirstMessageByAuthor = isFirstMessageByAuthor,
                         isLastMessageByAuthor = isLastMessageByAuthor,
                     )
                     Spacer(modifier = Modifier.height(4.dp))
