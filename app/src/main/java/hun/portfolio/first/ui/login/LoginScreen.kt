@@ -1,4 +1,4 @@
-package hun.portfolio.first.ui
+package hun.portfolio.first.ui.login
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -17,6 +17,7 @@ import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -35,8 +36,12 @@ import hun.portfolio.first.ui.theme.KakaoYellow
 import hun.portfolio.first.ui.theme.NaverGreen
 
 @Composable
-fun HomeScreen(
-    modifier: Modifier,
+fun LoginScreen(
+    onGoogleClick: () -> Unit,
+    onKakaoTalkClick: () -> Unit,
+    onNaverClick: () -> Unit,
+    onGuestClick: () -> Unit,
+    modifier: Modifier = Modifier,
     navigateToChat: () -> Unit
 ) {
     Box(
@@ -58,6 +63,10 @@ fun HomeScreen(
                 }
                 Spacer(Modifier.padding(vertical = 24.dp))
                 LoginButtonColumn(
+                    onGoogleClick = onGoogleClick,
+                    onKakaoTalkClick = onKakaoTalkClick,
+                    onNaverClick = onNaverClick,
+                    onGuestClick = onGuestClick,
                     modifier = modifier,
                     navigateToChat = navigateToChat
                 )
@@ -68,12 +77,22 @@ fun HomeScreen(
 
 @Preview
 @Composable
-fun HomeScreenPreview() {
-    HomeScreen(modifier = Modifier) { }
+fun LoginScreenPreview() {
+    LoginScreen(
+        onGoogleClick = {},
+        onKakaoTalkClick = {},
+        onNaverClick = {},
+        onGuestClick = {},
+        modifier = Modifier
+    ) { }
 }
 
 @Composable
 fun LoginButtonColumn(
+    onGoogleClick: () -> Unit,
+    onKakaoTalkClick: () -> Unit,
+    onNaverClick: () -> Unit,
+    onGuestClick: () -> Unit,
     modifier: Modifier = Modifier,
     navigateToChat: () -> Unit
 ) {
@@ -91,7 +110,7 @@ fun LoginButtonColumn(
             icon = R.drawable.google_logo,
             iconSize = 18.dp,
         ) {
-            navigateToChat()
+            onGoogleClick()
         }
         Spacer(modifier = Modifier.padding(vertical = 2.dp))
         LoginButton(
@@ -100,7 +119,7 @@ fun LoginButtonColumn(
             backgroundColor = KakaoYellow,
             icon = R.drawable.kakaotalk_logo,
         ) {
-            navigateToChat()
+            onKakaoTalkClick()
         }
         Spacer(modifier = Modifier.padding(vertical = 2.dp))
         LoginButton(
@@ -109,17 +128,16 @@ fun LoginButtonColumn(
             backgroundColor = NaverGreen,
             icon = R.drawable.naver_logo,
         ) {
-            navigateToChat()
+            onNaverClick()
         }
         Spacer(modifier = Modifier.padding(vertical = 4.dp))
         Text(
             text = "비회원 로그인",
             textAlign = TextAlign.Center,
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .fillMaxWidth()
                 .padding(vertical = 8.dp)
-                .clickable {
-                    navigateToChat()
-                }
+                .clickable { onGuestClick() }
         )
     }
 }
