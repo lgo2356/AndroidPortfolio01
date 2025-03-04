@@ -1,9 +1,15 @@
 package hun.portfolio.first.ui.login
 
+import android.util.Log
+import androidx.credentials.CustomCredential
+import androidx.credentials.GetCredentialResponse
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import hun.portfolio.first.data.user.UserEntity
+import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
+import com.google.firebase.auth.GoogleAuthProvider
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import hun.portfolio.first.data.user.UserRepository
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
@@ -20,8 +26,26 @@ class LoginViewModel(
     private val _uiEvent = Channel<LoginUiEvent>()
     val uiEvent = _uiEvent.receiveAsFlow()
 
-    fun googleLogin() {
-
+    fun signInWithGoogle(response: GetCredentialResponse) {
+        when (val credential = response.credential) {
+            is CustomCredential -> {
+                if (credential.type == GoogleIdTokenCredential.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL) {
+                    runCatching {
+                        val tokenCredential = GoogleIdTokenCredential.createFrom(credential.data)
+                        val googleCredential = GoogleAuthProvider
+                            .getCredential(tokenCredential.idToken, null)
+                        val authResult = Firebase.auth.signInWithCredential(googleCredential)
+                            .addOnCompleteListener { task ->
+                                if (task.isSuccessful) {
+                                    viewModelScope.launch { _uiEvent.send(LoginUiEvent.NavigateToChat) }
+                                } else {
+                                    Log.d("TAG", "Failure")
+                                }
+                            }
+                    }
+                }
+            }
+        }
     }
 
     fun kakaoTalkLogin() {

@@ -17,7 +17,6 @@ import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -38,11 +37,9 @@ import hun.portfolio.first.ui.theme.NaverGreen
 @Composable
 fun LoginScreen(
     onGoogleClick: () -> Unit,
-    onKakaoTalkClick: () -> Unit,
-    onNaverClick: () -> Unit,
     onGuestClick: () -> Unit,
     modifier: Modifier = Modifier,
-    navigateToChat: () -> Unit
+    navigateToChat: () -> Unit,
 ) {
     Box(
         modifier = modifier.fillMaxSize(),
@@ -64,11 +61,9 @@ fun LoginScreen(
                 Spacer(Modifier.padding(vertical = 24.dp))
                 LoginButtonColumn(
                     onGoogleClick = onGoogleClick,
-                    onKakaoTalkClick = onKakaoTalkClick,
-                    onNaverClick = onNaverClick,
                     onGuestClick = onGuestClick,
                     modifier = modifier,
-                    navigateToChat = navigateToChat
+                    navigateToChat = navigateToChat,
                 )
             }
         }
@@ -80,8 +75,6 @@ fun LoginScreen(
 fun LoginScreenPreview() {
     LoginScreen(
         onGoogleClick = {},
-        onKakaoTalkClick = {},
-        onNaverClick = {},
         onGuestClick = {},
         modifier = Modifier
     ) { }
@@ -90,8 +83,6 @@ fun LoginScreenPreview() {
 @Composable
 fun LoginButtonColumn(
     onGoogleClick: () -> Unit,
-    onKakaoTalkClick: () -> Unit,
-    onNaverClick: () -> Unit,
     onGuestClick: () -> Unit,
     modifier: Modifier = Modifier,
     navigateToChat: () -> Unit
@@ -119,7 +110,7 @@ fun LoginButtonColumn(
             backgroundColor = KakaoYellow,
             icon = R.drawable.kakaotalk_logo,
         ) {
-            onKakaoTalkClick()
+
         }
         Spacer(modifier = Modifier.padding(vertical = 2.dp))
         LoginButton(
@@ -128,7 +119,7 @@ fun LoginButtonColumn(
             backgroundColor = NaverGreen,
             icon = R.drawable.naver_logo,
         ) {
-            onNaverClick()
+
         }
         Spacer(modifier = Modifier.padding(vertical = 4.dp))
         Text(

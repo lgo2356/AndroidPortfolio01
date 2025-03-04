@@ -5,7 +5,7 @@ import hun.portfolio.first.data.user.UserEntity
 import hun.portfolio.first.data.user.UserRepository
 
 class UserRepositoryImpl(
-    private val userDao: UserDao
+    private val userDao: UserDao,
 ) : UserRepository {
     override suspend fun getUser(id: String): UserEntity? {
         return userDao.getUser(id)

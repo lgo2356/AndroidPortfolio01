@@ -27,7 +27,9 @@ fun PortfolioNavGraph(
     ) {
         composable(route = PortfolioDestination.HOME_ROUTE) {
             val loginViewModel: LoginViewModel = viewModel(
-                factory = LoginViewModel.provideFactory(appContainer.userRepository)
+                factory = LoginViewModel.provideFactory(
+                    userRepository =  appContainer.userRepository,
+                )
             )
 
             LoginRoute(

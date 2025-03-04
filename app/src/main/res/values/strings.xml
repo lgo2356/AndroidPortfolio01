@@ -1,3 +1,6 @@
 <resources>
     <string name="app_name">Protfolio_01</string>
+    <string name="default_web_client_id">
+        430316618776-5cbper646bjf0tq1opqd74epot08p9gk.apps.googleusercontent.com
+    </string>
 </resources>
