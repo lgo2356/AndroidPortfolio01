@@ -26,6 +26,12 @@ class LoginViewModel(
     private val _uiEvent = Channel<LoginUiEvent>()
     val uiEvent = _uiEvent.receiveAsFlow()
 
+    init {
+        Firebase.auth.currentUser?.let {
+            viewModelScope.launch { _uiEvent.send(LoginUiEvent.NavigateToChat) }
+        }
+    }
+
     fun signInWithGoogle(response: GetCredentialResponse) {
         when (val credential = response.credential) {
             is CustomCredential -> {
@@ -34,7 +40,8 @@ class LoginViewModel(
                         val tokenCredential = GoogleIdTokenCredential.createFrom(credential.data)
                         val googleCredential = GoogleAuthProvider
                             .getCredential(tokenCredential.idToken, null)
-                        val authResult = Firebase.auth.signInWithCredential(googleCredential)
+
+                        Firebase.auth.signInWithCredential(googleCredential)
                             .addOnCompleteListener { task ->
                                 if (task.isSuccessful) {
                                     viewModelScope.launch { _uiEvent.send(LoginUiEvent.NavigateToChat) }

@@ -21,7 +21,8 @@ fun LoginRoute(
     val onGoogleClick = {
         val credentialManager = CredentialManager.create(context)
         val googleIdOption = GetGoogleIdOption.Builder()
-            .setFilterByAuthorizedAccounts(false)
+            .setFilterByAuthorizedAccounts(true)
+            .setAutoSelectEnabled(true)
             .setServerClientId(context.getString(R.string.default_web_client_id))
             .build()
         val request = GetCredentialRequest.Builder()
