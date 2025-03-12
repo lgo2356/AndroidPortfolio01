@@ -32,4 +32,4 @@ google-services.json
 # Android Profiling
 *.hprof
 
-network_security_config.xml
+/app/src/main/res/xml/network_security_config.xml
