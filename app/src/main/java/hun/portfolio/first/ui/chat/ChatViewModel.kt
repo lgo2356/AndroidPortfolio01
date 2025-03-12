@@ -31,6 +31,8 @@ class ChatViewModel(
         _uiState.value.messages.add(0, message)
 
         viewModelScope.launch {
+            messageRepository.sendMessage(message.content)
+
             messageRepository.addMessage(message)
         }
     }

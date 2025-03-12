@@ -14,11 +14,17 @@ interface AppContainer {
 class AppContainerImpl(private val applicationContext: Context) : AppContainer {
     override val messageRepository: MessageRepository by lazy {
         val messageDao = AppDatabase.getInstance(applicationContext).messageDao()
-        MessageRepositoryImpl(messageDao)
+        val apiService = ApiClient.getInstance()
+
+        MessageRepositoryImpl(
+            messageDao,
+            apiService,
+        )
     }
 
     override val userRepository: UserRepository by lazy {
         val userDao = AppDatabase.getInstance(applicationContext).userDao()
+
         UserRepositoryImpl(userDao)
     }
 }
