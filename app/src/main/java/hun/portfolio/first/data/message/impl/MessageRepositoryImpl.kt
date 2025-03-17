@@ -6,7 +6,6 @@ import hun.portfolio.first.data.message.MessageEntity
 import hun.portfolio.first.data.message.MessageRepository
 import hun.portfolio.first.data.message.MessageRequest
 import hun.portfolio.first.data.message.MessageResponse
-import retrofit2.Response
 
 class MessageRepositoryImpl(
     private val messageDao: MessageDao,
@@ -20,9 +19,38 @@ class MessageRepositoryImpl(
         messageDao.addMessage(message)
     }
 
-    override suspend fun sendMessage(message: String): Response<MessageResponse> {
-        val req = MessageRequest(message)
+    override suspend fun sendMessage(content: String): MessageResponse {
+        val req = MessageRequest(
+            chatRoomId = "01",
+            content = content,
+        )
 
-        return apiService.sendMessage(req)
+        val response = apiService.sendMessage(req)
+
+        if (response.isSuccessful) {
+            val body = response.body()
+
+            if (body != null) {
+                return body
+            } else {
+                val emptyResponse = MessageResponse(
+                    code = "204",
+                    message = "Empty body.",
+                    request = null,
+                    data = null,
+                )
+
+                return emptyResponse
+            }
+        } else {
+            val emptyResponse = MessageResponse(
+                code = "500",
+                message = "Error body.",
+                request = null,
+                data = null,
+            )
+
+            return emptyResponse
+        }
     }
 }

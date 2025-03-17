@@ -1,5 +1,9 @@
 package hun.portfolio.first.data.message
 
+import com.google.gson.annotations.SerializedName
+
 data class MessageRequest(
-    val message: String,
+    @SerializedName("chat_room_id")
+    val chatRoomId: String,
+    val content: String,
 )

@@ -3,7 +3,6 @@ package hun.portfolio.first.data.message.impl
 import hun.portfolio.first.data.message.MessageEntity
 import hun.portfolio.first.data.message.MessageRepository
 import hun.portfolio.first.data.message.MessageResponse
-import retrofit2.Response
 
 class FakeMessageRepositoryImpl : MessageRepository {
     private val messages: MutableList<MessageEntity> =
@@ -17,7 +16,14 @@ class FakeMessageRepositoryImpl : MessageRepository {
         messages.add(message)
     }
 
-    override suspend fun sendMessage(message: String): Response<MessageResponse>? {
-        return null
+    override suspend fun sendMessage(message: String): MessageResponse {
+        val emptyResponse = MessageResponse(
+            code = "500",
+            message = "Error body.",
+            request = null,
+            data = null,
+        )
+
+        return emptyResponse
     }
 }

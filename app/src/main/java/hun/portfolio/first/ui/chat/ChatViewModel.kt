@@ -14,7 +14,8 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 data class ChatUiState(
-    val messages: SnapshotStateList<MessageEntity> = mutableStateListOf()
+    val messages: SnapshotStateList<MessageEntity> = mutableStateListOf(),
+    val isLoading: Boolean = false,
 )
 
 class ChatViewModel(
@@ -31,7 +32,18 @@ class ChatViewModel(
         _uiState.value.messages.add(0, message)
 
         viewModelScope.launch {
-            messageRepository.sendMessage(message.content)
+            val response = messageRepository.sendMessage(message.content)
+            val data = response.data
+
+            if (data != null) {
+                val reMessage = MessageEntity(
+                    author = "assistant",
+                    content = data.content,
+                    timestamp = data.formattedTimestamp
+                )
+
+                _uiState.value.messages.add(0, reMessage)
+            }
 
             messageRepository.addMessage(message)
         }
