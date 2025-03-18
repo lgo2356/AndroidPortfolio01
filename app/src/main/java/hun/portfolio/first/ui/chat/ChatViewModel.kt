@@ -1,21 +1,17 @@
 package hun.portfolio.first.ui.chat
 
 import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import hun.portfolio.first.data.message.MessageEntity
 import hun.portfolio.first.data.message.MessageRepository
-import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 data class ChatUiState(
-    val messages: SnapshotStateList<MessageEntity> = mutableStateListOf(),
-    val isLoading: Boolean = false,
+    val messages: List<MessageUiState> = mutableStateListOf(),
 )
 
 class ChatViewModel(
@@ -28,34 +24,52 @@ class ChatViewModel(
         refreshAll()
     }
 
-    fun addMessage(message: MessageEntity) {
-        _uiState.value.messages.add(0, message)
+    fun addMessage(messageState: MessageUiState) {
+        _uiState.value = _uiState.value.copy(
+            messages = listOf(messageState) + _uiState.value.messages
+        )
 
         viewModelScope.launch {
-            val response = messageRepository.sendMessage(message.content)
-            val data = response.data
-
-            if (data != null) {
-                val reMessage = MessageEntity(
-                    author = "assistant",
-                    content = data.content,
-                    timestamp = data.formattedTimestamp
-                )
-
-                _uiState.value.messages.add(0, reMessage)
-            }
-
-            messageRepository.addMessage(message)
+            val response = messageRepository.sendMessage(
+                content = messageState.content,
+                authorName = messageState.authorName,
+                timestamp = messageState.timestamp
+            )
         }
+
+//        if (data != null) {
+//            val reMessage = MessageEntity(
+//                author = "assistant",
+//                content = data.content,
+//                timestamp = data.formattedTimestamp
+//            )
+//
+//            _uiState.value.messages.add(0, reMessage)
+//        }
     }
 
     private fun refreshAll() {
         viewModelScope.launch {
-            val messagesDeferred = async { messageRepository.getMessages() }
+            val messages = messageRepository.getMessages()
 
-            val messages = messagesDeferred.await()
+            _uiState.value = _uiState.value.copy(
+                messages = messages.map { message ->
+                    MessageUiState(
+                        content = message.content,
+                        authorName = message.author,
+                        authorImage = message.authorImage,
+                        timestamp = message.timestamp,
+                    )
+                }
+            )
 
-            _uiState.value.messages.addAll(messages)
+//            for (index in messages.indices) {
+//                val message = messages[index]
+////                val nextAuthor = messages.getOrNull(index + 1)?.author
+////                val isLastMessageByAuthor = nextAuthor != message.author
+//
+//                _uiState.value.messages.add(messageState)
+//            }
         }
     }
 

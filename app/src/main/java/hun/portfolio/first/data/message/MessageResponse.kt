@@ -12,8 +12,6 @@ data class MessageResponse(
 )
 
 data class MessageResponseData(
-    val role: String,
-    val content: String,
     val timestamp: String,
     val formattedTimestamp: String,
 )

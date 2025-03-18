@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.paddingFrom
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -21,20 +22,26 @@ import androidx.compose.ui.layout.LastBaseline
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import hun.portfolio.first.data.message.MessageEntity
+import hun.portfolio.first.R
 import hun.portfolio.first.data.messageByMe
 import hun.portfolio.first.data.messageByOther
 
+data class MessageUiState(
+    val content: String,
+    val authorName: String,
+    val authorImage: Int = if (authorName == "me") R.drawable.ali else R.drawable.someone_else,
+    val timestamp: String,
+    val isUserMe: Boolean = authorName == "me",
+    val isSending: Boolean = false,
+    var isLastMessageByAuthor: Boolean = false,
+)
+
 @Composable
-fun Message(
-    message: MessageEntity,
-    isUserMe: Boolean,
-    isLastMessageByAuthor: Boolean,
-) {
+fun Message(uiState: MessageUiState) {
     val borderColor = MaterialTheme.colorScheme.primary
 
     Row(modifier = Modifier) {
-        if (isLastMessageByAuthor) {
+        if (uiState.isLastMessageByAuthor) {
             Image(
                 modifier = Modifier
                     .size(42.dp)
@@ -42,7 +49,7 @@ fun Message(
                     .border(3.dp, MaterialTheme.colorScheme.surface, CircleShape)
                     .clip(CircleShape)
                     .align(Alignment.Top),
-                painter = painterResource(message.authorImage),
+                painter = painterResource(uiState.authorImage),
                 contentScale = ContentScale.Crop,
                 contentDescription = null,
             )
@@ -51,12 +58,24 @@ fun Message(
         }
         Spacer(modifier = Modifier.padding(8.dp))
         Column {
-            if (isLastMessageByAuthor) {
-                AuthorNameTimestamp(message)
+            if (uiState.isLastMessageByAuthor) {
+                AuthorNameTimestamp(
+                    authorName = uiState.authorName,
+                    timestamp = uiState.timestamp,
+                )
             }
             ChatItemBubble(
-                message = message,
-                isUserMe = isUserMe
+                content = uiState.content,
+                isUserMe = uiState.isUserMe
+            )
+        }
+
+        if (uiState.isSending) {
+            Spacer(modifier = Modifier.padding(4.dp))
+            CircularProgressIndicator(
+                modifier = Modifier
+                    .size(24.dp)
+                    .align(Alignment.CenterVertically),
             )
         }
     }
@@ -65,28 +84,23 @@ fun Message(
 @Preview
 @Composable
 private fun MessageMePreview() {
-    Message(
-        message = messageByMe,
-        isUserMe = true,
-        isLastMessageByAuthor = true,
-    )
+    Message(messageByOther)
 }
 
 @Preview
 @Composable
 private fun MessageOtherPreview() {
-    Message(
-        message = messageByOther,
-        isUserMe = false,
-        isLastMessageByAuthor = false,
-    )
+    Message(messageByOther)
 }
 
 @Composable
-private fun AuthorNameTimestamp(message: MessageEntity) {
+private fun AuthorNameTimestamp(
+    authorName: String,
+    timestamp: String,
+) {
     Row {
         Text(
-            text = message.author,
+            text = authorName,
             style = MaterialTheme.typography.titleMedium,
             modifier = Modifier
                 .alignBy(LastBaseline)
@@ -94,7 +108,7 @@ private fun AuthorNameTimestamp(message: MessageEntity) {
         )
         Spacer(modifier = Modifier.width(8.dp))
         Text(
-            text = message.timestamp,
+            text = timestamp,
             style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             modifier = Modifier.alignBy(LastBaseline)
@@ -105,11 +119,11 @@ private fun AuthorNameTimestamp(message: MessageEntity) {
 @Preview
 @Composable
 private fun AuthorNameTimestampMe() {
-    AuthorNameTimestamp(messageByMe)
+    AuthorNameTimestamp(messageByMe.authorName, messageByMe.timestamp)
 }
 
 @Preview
 @Composable
 private fun AuthorNameTimestampOther() {
-    AuthorNameTimestamp(messageByOther)
+    AuthorNameTimestamp(messageByMe.authorName, messageByMe.timestamp)
 }

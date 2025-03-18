@@ -18,7 +18,7 @@ private val chatBubbleShape = RoundedCornerShape(4.dp, 20.dp, 20.dp, 20.dp)
 
 @Composable
 fun ChatItemBubble(
-    message: MessageEntity,
+    content: String,
     isUserMe: Boolean,
 ) {
     val bubbleBgColor = if (isUserMe) {
@@ -33,7 +33,7 @@ fun ChatItemBubble(
             shape = chatBubbleShape
         ) {
             Text(
-                text = message.content,
+                text = content,
                 modifier = Modifier.padding(16.dp)
             )
         }
@@ -44,7 +44,7 @@ fun ChatItemBubble(
 @Composable
 fun ChatItemBubbleMePreview() {
     ChatItemBubble(
-        message = messageByMe,
+        content = messageByMe.content,
         isUserMe = true
     )
 }
@@ -53,7 +53,7 @@ fun ChatItemBubbleMePreview() {
 @Composable
 fun ChatItemBubbleOtherPreview() {
     ChatItemBubble(
-        message = messageByOther,
+        content = messageByOther.content,
         isUserMe = false
     )
 }

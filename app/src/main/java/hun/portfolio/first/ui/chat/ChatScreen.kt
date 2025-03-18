@@ -12,12 +12,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import hun.portfolio.first.data.message.MessageEntity
 import hun.portfolio.first.data.messages
 
 @Composable
 fun ChatScreen(
-    messages: List<MessageEntity>,
+    messages: List<MessageUiState>,
     onMessageSent: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -28,14 +27,12 @@ fun ChatScreen(
                 .padding(paddingValue),
         ) {
             Messages(
-                messages = messages,
+                messageStates = messages,
                 modifier = Modifier
                     .padding(horizontal = 16.dp)
                     .weight(1f)
             )
-            UserInput(
-                onMessageSent = onMessageSent
-            )
+            UserInput(onMessageSent = onMessageSent)
         }
     }
 }
@@ -52,22 +49,20 @@ private fun ChatScreenPreview() {
 
 @Composable
 fun Messages(
-    messages: List<MessageEntity>,
+    messageStates: List<MessageUiState>,
     modifier: Modifier
 ) {
     Surface(modifier = modifier) {
         LazyColumn(reverseLayout = true) {
-            for (index in messages.indices) {
-                val nextAuthor = messages.getOrNull(index + 1)?.author
-                val content = messages[index]
-                val isLastMessageByAuthor = nextAuthor != content.author
+            for (index in messageStates.indices) {
+                val nextAuthor = messageStates.getOrNull(index + 1)?.authorName
+                val messageState = messageStates[index]
+                val isLastMessageByAuthor = nextAuthor != messageState.authorName
+
+                messageState.isLastMessageByAuthor = isLastMessageByAuthor
 
                 item {
-                    Message(
-                        message = content,
-                        isUserMe = content.author == "me",
-                        isLastMessageByAuthor = isLastMessageByAuthor,
-                    )
+                    Message(messageState)
                     Spacer(modifier = Modifier.height(4.dp))
                 }
             }

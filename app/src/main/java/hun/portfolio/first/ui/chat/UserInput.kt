@@ -82,7 +82,7 @@ private fun UserInputText(
                 onTextFieldFocused = onTextFieldFocused,
                 keyboardType = keyboardType,
                 focusState = focusState,
-                onMessageSent = onMessageSent,
+                onKeyboardDone = { onMessageSent(textFieldValue.text) },
                 modifier = Modifier.fillMaxWidth()
             )
         }
@@ -102,7 +102,7 @@ private fun BoxScope.UserInputTextField(
     onTextFieldFocused: (Boolean) -> Unit,
     keyboardType: KeyboardType,
     focusState: Boolean,
-    onMessageSent: (String) -> Unit,
+    onKeyboardDone: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     var lastFocusState by remember { mutableStateOf(false) }
@@ -114,9 +114,9 @@ private fun BoxScope.UserInputTextField(
             keyboardType = keyboardType,
             imeAction = ImeAction.Send
         ),
-        keyboardActions = KeyboardActions {
-            onMessageSent(textFieldValue.text)
-        },
+        keyboardActions = KeyboardActions(
+            onDone = { onKeyboardDone() }
+        ),
         singleLine = true,
         modifier = modifier
             .align(Alignment.CenterStart)

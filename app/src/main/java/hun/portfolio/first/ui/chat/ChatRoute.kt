@@ -3,7 +3,6 @@ package hun.portfolio.first.ui.chat
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import hun.portfolio.first.data.message.MessageEntity
 
 @Composable
 fun ChatRoute(chatViewModel: ChatViewModel) {
@@ -13,9 +12,9 @@ fun ChatRoute(chatViewModel: ChatViewModel) {
         messages = uiState.messages,
         onMessageSent = { content ->
             chatViewModel.addMessage(
-                MessageEntity(
-                    author = "me",
+                MessageUiState(
                     content = content,
+                    authorName = "me",
                     timestamp = "8:08 PM",
                 )
             )

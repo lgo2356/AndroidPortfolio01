@@ -5,18 +5,22 @@ import hun.portfolio.first.data.message.MessageRepository
 import hun.portfolio.first.data.message.MessageResponse
 
 class FakeMessageRepositoryImpl : MessageRepository {
-    private val messages: MutableList<MessageEntity> =
-        hun.portfolio.first.data.messages.toMutableList()
+//    private val messages: MutableList<MessageEntity> =
+//        hun.portfolio.first.data.messages.toMutableList()
 
     override suspend fun getMessages(): List<MessageEntity> {
-        return messages
+        return listOf()
     }
 
-    override suspend fun addMessage(message: MessageEntity) {
-        messages.add(message)
+    override suspend fun addMessage(content: String, authorName: String, timestamp: String) {
+//        messages.add(message)
     }
 
-    override suspend fun sendMessage(message: String): MessageResponse {
+    override suspend fun sendMessage(
+        content: String,
+        authorName: String,
+        timestamp: String
+    ): MessageResponse {
         val emptyResponse = MessageResponse(
             code = "500",
             message = "Error body.",

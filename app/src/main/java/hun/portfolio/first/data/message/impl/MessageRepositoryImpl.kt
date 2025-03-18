@@ -1,5 +1,6 @@
 package hun.portfolio.first.data.message.impl
 
+import android.util.Log
 import hun.portfolio.first.data.ApiService
 import hun.portfolio.first.data.message.MessageDao
 import hun.portfolio.first.data.message.MessageEntity
@@ -15,36 +16,53 @@ class MessageRepositoryImpl(
         return messageDao.getAllMessages()
     }
 
-    override suspend fun addMessage(message: MessageEntity) {
-        messageDao.addMessage(message)
-    }
-
-    override suspend fun sendMessage(content: String): MessageResponse {
-        val req = MessageRequest(
-            chatRoomId = "01",
+    override suspend fun addMessage(
+        content: String,
+        authorName: String,
+        timestamp: String
+    ) {
+        val entity = MessageEntity(
             content = content,
+            author = authorName,
+            timestamp = timestamp,
         )
 
-        val response = apiService.sendMessage(req)
+        messageDao.addMessage(entity)
+    }
+
+    override suspend fun sendMessage(
+        content: String,
+        authorName: String,
+        timestamp: String
+    ): MessageResponse {
+        // 서버에 메시지 전송
+        val response = apiService.sendMessage(
+            MessageRequest(
+                chatRoomId = "01",
+                content = content,
+            )
+        )
 
         if (response.isSuccessful) {
-            val body = response.body()
-
-            if (body != null) {
-                return body
-            } else {
-                val emptyResponse = MessageResponse(
-                    code = "204",
-                    message = "Empty body.",
-                    request = null,
-                    data = null,
+            // 성공하면 로컬 DB에 저장
+            if (response.code() == 200) {
+                messageDao.addMessage(
+                    MessageEntity(
+                        content = content,
+                        author = authorName,
+                        timestamp = timestamp
+                    )
                 )
-
-                return emptyResponse
+            } else if (response.code() == 204) {
+                //TODO: Handle empty body.
+            } else {
+                //TODO: Throw error message.
             }
+
+            return response.body()!!
         } else {
             val emptyResponse = MessageResponse(
-                code = "500",
+                code = response.code().toString(),
                 message = "Error body.",
                 request = null,
                 data = null,
