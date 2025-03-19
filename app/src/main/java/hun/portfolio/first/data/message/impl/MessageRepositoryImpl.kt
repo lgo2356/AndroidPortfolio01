@@ -1,6 +1,5 @@
 package hun.portfolio.first.data.message.impl
 
-import android.util.Log
 import hun.portfolio.first.data.ApiService
 import hun.portfolio.first.data.message.MessageDao
 import hun.portfolio.first.data.message.MessageEntity
@@ -44,7 +43,7 @@ class MessageRepositoryImpl(
         )
 
         if (response.isSuccessful) {
-            // 성공하면 로컬 DB에 저장
+            // 서버 전송이 성공하면 로컬 DB에 저장
             if (response.code() == 200) {
                 messageDao.addMessage(
                     MessageEntity(

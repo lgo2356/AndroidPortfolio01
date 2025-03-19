@@ -14,6 +14,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -22,22 +23,12 @@ import androidx.compose.ui.layout.LastBaseline
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import hun.portfolio.first.R
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import hun.portfolio.first.data.messageByMe
-import hun.portfolio.first.data.messageByOther
-
-data class MessageUiState(
-    val content: String,
-    val authorName: String,
-    val authorImage: Int = if (authorName == "me") R.drawable.ali else R.drawable.someone_else,
-    val timestamp: String,
-    val isUserMe: Boolean = authorName == "me",
-    val isSending: Boolean = false,
-    var isLastMessageByAuthor: Boolean = false,
-)
 
 @Composable
-fun Message(uiState: MessageUiState) {
+fun Message(viewModel: MessageViewModel) {
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val borderColor = MaterialTheme.colorScheme.primary
 
     Row(modifier = Modifier) {
@@ -79,18 +70,6 @@ fun Message(uiState: MessageUiState) {
             )
         }
     }
-}
-
-@Preview
-@Composable
-private fun MessageMePreview() {
-    Message(messageByOther)
-}
-
-@Preview
-@Composable
-private fun MessageOtherPreview() {
-    Message(messageByOther)
 }
 
 @Composable

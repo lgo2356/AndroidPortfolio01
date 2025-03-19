@@ -6,10 +6,10 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 
 @Composable
 fun ChatRoute(chatViewModel: ChatViewModel) {
-    val uiState by chatViewModel.uiState.collectAsStateWithLifecycle()
+    val messageViewModels by chatViewModel.messageViewModels.collectAsStateWithLifecycle()
 
     ChatScreen(
-        messages = uiState.messages,
+        messageViewModels = messageViewModels,
         onMessageSent = { content ->
             chatViewModel.addMessage(
                 MessageUiState(
