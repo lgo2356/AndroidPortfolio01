@@ -41,8 +41,8 @@ fun Messages(
     modifier: Modifier
 ) {
     Surface(modifier = modifier) {
-        LazyColumn(reverseLayout = true) {
-            for (viewModel in viewModels) {
+        LazyColumn(reverseLayout = false) {
+            for (viewModel in viewModels) {  // 하이, 호호, ㅀ, 4
                 item {
                     Message(viewModel)
                     Spacer(modifier = Modifier.height(4.dp))

@@ -49,7 +49,7 @@ class MessageRepositoryImpl(
                     MessageEntity(
                         content = content,
                         author = authorName,
-                        timestamp = timestamp
+                        timestamp = response.body()?.data?.formattedTimestamp ?: "error_timestamp"
                     )
                 )
             } else if (response.code() == 204) {

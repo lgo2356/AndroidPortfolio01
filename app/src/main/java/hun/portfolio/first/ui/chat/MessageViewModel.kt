@@ -17,15 +17,41 @@ data class MessageUiState(
     val timestamp: String,
     val isUserMe: Boolean = authorName == "me",
     val isSending: Boolean = false,
-    var isLastMessageByAuthor: Boolean = false,
+    val isAuthorChanged: Boolean = false,
+    val isTimestampChanged: Boolean = false,
 )
 
 class MessageViewModel(
     private val repository: MessageRepository,
-    initialState: MessageUiState
+    private val prevState: MessageUiState?,
+    initialState: MessageUiState,
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(initialState)
     val uiState = _uiState.asStateFlow()
+
+    init {
+        val authorName = _uiState.value.authorName
+        val isAuthorChanged = if (prevState != null) {
+            authorName != prevState.authorName
+        } else {
+            true
+        }
+
+        val timestamp = _uiState.value.timestamp
+        val isTimestampChanged = if (prevState != null) {
+            timestamp != prevState.timestamp
+        } else {
+            true
+        }
+
+        _uiState.update {
+            it.copy(
+                isSending = false,
+                isAuthorChanged = isAuthorChanged,
+                isTimestampChanged = isTimestampChanged
+            )
+        }
+    }
 
     fun send() {
         viewModelScope.launch {
@@ -37,9 +63,31 @@ class MessageViewModel(
                 timestamp = _uiState.value.timestamp
             )
 
-            delay(2000)
+            val authorName = _uiState.value.authorName
+            val timestamp = response.data?.formattedTimestamp ?: "error_timestamp"
 
-            _uiState.update { it.copy(isSending = false) }
+            val isAuthorChanged = if (prevState != null) {
+                authorName != prevState.authorName
+            } else {
+                false
+            }
+
+            val isTimestampChanged = if (prevState != null) {
+                timestamp != prevState.timestamp
+            } else {
+                false
+            }
+
+            delay(500)
+
+            _uiState.update {
+                it.copy(
+                    timestamp = timestamp,
+                    isSending = false,
+                    isAuthorChanged = isAuthorChanged,
+                    isTimestampChanged = isTimestampChanged
+                )
+            }
         }
     }
 }

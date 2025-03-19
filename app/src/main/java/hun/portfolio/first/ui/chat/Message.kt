@@ -32,7 +32,7 @@ fun Message(viewModel: MessageViewModel) {
     val borderColor = MaterialTheme.colorScheme.primary
 
     Row(modifier = Modifier) {
-        if (uiState.isLastMessageByAuthor) {
+        if (uiState.isAuthorChanged || uiState.isTimestampChanged) {
             Image(
                 modifier = Modifier
                     .size(42.dp)
@@ -49,7 +49,7 @@ fun Message(viewModel: MessageViewModel) {
         }
         Spacer(modifier = Modifier.padding(8.dp))
         Column {
-            if (uiState.isLastMessageByAuthor) {
+            if (uiState.isAuthorChanged || uiState.isTimestampChanged) {
                 AuthorNameTimestamp(
                     authorName = uiState.authorName,
                     timestamp = uiState.timestamp,
