@@ -10,6 +10,7 @@ data class MessageEntity(
     val id: Long = 0,
     val author: String,
     val content: String,
-    val timestamp: String,
+    val timestampYYYYMMdd: String,
+    val timestampHHmm: String,
     val authorImage: Int = if (author == "me") R.drawable.ali else R.drawable.someone_else,
 )

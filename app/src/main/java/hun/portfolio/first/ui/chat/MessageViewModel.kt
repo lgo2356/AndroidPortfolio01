@@ -9,12 +9,16 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 data class MessageUiState(
     val content: String,
     val authorName: String,
     val authorImage: Int = if (authorName == "me") R.drawable.ali else R.drawable.someone_else,
-    val timestamp: String,
+    val timestamp: String = "initial_timestamp",
+    val date: String = "initial_date",
     val isUserMe: Boolean = authorName == "me",
     val isSending: Boolean = false,
     val isAuthorChanged: Boolean = false,
@@ -59,23 +63,35 @@ class MessageViewModel(
 
             val response = repository.sendMessage(
                 content = _uiState.value.content,
-                authorName = _uiState.value.authorName,
-                timestamp = _uiState.value.timestamp
+                authorName = _uiState.value.authorName
             )
 
             val authorName = _uiState.value.authorName
-            val timestamp = response.data?.formattedTimestamp ?: "error_timestamp"
+
+            val dateParser = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSX", Locale.getDefault())
+            val timestamp: String = response.data?.timestamp?.let {
+                val dateFormatter = SimpleDateFormat("HH:mm", Locale.getDefault())
+                val date: Date = dateParser.parse(it) ?: Date()
+
+                dateFormatter.format(date)
+            } ?: "error_timestamp"
+            val date: String = response.data?.timestamp?.let {
+                val dateFormatter = SimpleDateFormat("yyyy년 MM월 dd일", Locale.getDefault())
+                val date: Date = dateParser.parse(it) ?: Date()
+
+                dateFormatter.format(date)
+            } ?: "error_date"
 
             val isAuthorChanged = if (prevState != null) {
                 authorName != prevState.authorName
             } else {
-                false
+                true
             }
 
             val isTimestampChanged = if (prevState != null) {
                 timestamp != prevState.timestamp
             } else {
-                false
+                true
             }
 
             delay(500)
@@ -83,6 +99,7 @@ class MessageViewModel(
             _uiState.update {
                 it.copy(
                     timestamp = timestamp,
+                    date = date,
                     isSending = false,
                     isAuthorChanged = isAuthorChanged,
                     isTimestampChanged = isTimestampChanged

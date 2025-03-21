@@ -9,13 +9,14 @@ fun ChatRoute(chatViewModel: ChatViewModel) {
     val messageViewModels by chatViewModel.messageViewModels.collectAsStateWithLifecycle()
 
     ChatScreen(
+        viewModel = chatViewModel,
         messageViewModels = messageViewModels,
         onMessageSent = { content ->
             chatViewModel.addMessage(
                 MessageUiState(
                     content = content,
                     authorName = "me",
-                    timestamp = "8:08 PM",
+                    timestamp = "",
                 )
             )
         }

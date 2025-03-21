@@ -28,7 +28,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun UserInput(onMessageSent: (String) -> Unit) {
+fun UserInput(
+    onMessageSent: (String) -> Unit
+) {
     var textState by rememberSaveable(stateSaver = TextFieldValue.Saver) {
         mutableStateOf(TextFieldValue())
     }
@@ -46,7 +48,6 @@ fun UserInput(onMessageSent: (String) -> Unit) {
                 textState = TextFieldValue("")
 
                 onMessageSent(text)
-//                textState = TextFieldValue("")
             }
         },
         focusState = textFieldFocusState

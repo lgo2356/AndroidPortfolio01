@@ -6,6 +6,9 @@ import hun.portfolio.first.data.message.MessageEntity
 import hun.portfolio.first.data.message.MessageRepository
 import hun.portfolio.first.data.message.MessageRequest
 import hun.portfolio.first.data.message.MessageResponse
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 class MessageRepositoryImpl(
     private val messageDao: MessageDao,
@@ -23,7 +26,8 @@ class MessageRepositoryImpl(
         val entity = MessageEntity(
             content = content,
             author = authorName,
-            timestamp = timestamp,
+            timestampYYYYMMdd = timestamp,
+            timestampHHmm = timestamp
         )
 
         messageDao.addMessage(entity)
@@ -31,8 +35,7 @@ class MessageRepositoryImpl(
 
     override suspend fun sendMessage(
         content: String,
-        authorName: String,
-        timestamp: String
+        authorName: String
     ): MessageResponse {
         // 서버에 메시지 전송
         val response = apiService.sendMessage(
@@ -45,11 +48,29 @@ class MessageRepositoryImpl(
         if (response.isSuccessful) {
             // 서버 전송이 성공하면 로컬 DB에 저장
             if (response.code() == 200) {
+                val dateParser = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSX", Locale.getDefault())
+                val dateFormatter1 = SimpleDateFormat("yyyy년 MM월 dd일", Locale.getDefault())
+                val dateFormatter2 = SimpleDateFormat("HH:mm", Locale.getDefault())
+                val rawTimestamp: String? = response.body()?.data?.timestamp
+                val timestampYYYYMMdd: String
+                val timestampHHmm: String
+
+                if (rawTimestamp != null) {
+                    val date: Date = dateParser.parse(rawTimestamp) ?: Date()
+
+                    timestampYYYYMMdd = dateFormatter1.format(date)
+                    timestampHHmm = dateFormatter2.format(date)
+                } else {
+                    timestampYYYYMMdd = "error_timestamp"
+                    timestampHHmm = "error_timestamp"
+                }
+
                 messageDao.addMessage(
                     MessageEntity(
                         content = content,
                         author = authorName,
-                        timestamp = response.body()?.data?.formattedTimestamp ?: "error_timestamp"
+                        timestampYYYYMMdd = timestampYYYYMMdd,
+                        timestampHHmm = timestampHHmm
                     )
                 )
             } else if (response.code() == 204) {

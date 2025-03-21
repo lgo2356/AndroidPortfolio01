@@ -6,11 +6,17 @@ import androidx.lifecycle.viewModelScope
 import hun.portfolio.first.data.message.MessageRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.last
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
+data class ChatUiState(
+    val lastDate: String = "",
+)
+
 class ChatViewModel(private val messageRepository: MessageRepository) : ViewModel() {
+    private val _uiState = MutableStateFlow(ChatUiState())
+    val uiState: StateFlow<ChatUiState> = _uiState
+
     private val _messageViewModels = MutableStateFlow<List<MessageViewModel>>(emptyList())
     val messageViewModels: StateFlow<List<MessageViewModel>> = _messageViewModels
 
@@ -19,11 +25,15 @@ class ChatViewModel(private val messageRepository: MessageRepository) : ViewMode
     }
 
     fun addMessage(messageState: MessageUiState) {
-        val prevViewModel = messageViewModels.value.last()
+        val prevViewModel = if (messageViewModels.value.isNotEmpty()) {
+            messageViewModels.value.last()
+        } else {
+            null
+        }
         val viewModel = MessageViewModel(
             repository = messageRepository,
             initialState = messageState,
-            prevState = prevViewModel.uiState.value
+            prevState = prevViewModel?.uiState?.value
         )
 
         viewModel.send()
@@ -51,27 +61,35 @@ class ChatViewModel(private val messageRepository: MessageRepository) : ViewMode
             entities.mapIndexed { index, entity ->
                 val prevEntity = entities.getOrNull(index - 1)
 
-                val state = MessageUiState(
+                if (prevEntity != null) {
+                    if (prevEntity.timestampYYYYMMdd != entity.timestampYYYYMMdd) {
+                        _uiState.update { ChatUiState(lastDate = entity.timestampYYYYMMdd) }
+                    } else {
+//                        _uiState.update { ChatUiState(isDateChanged = false) }
+                    }
+                }
+
+                val messageUiState = MessageUiState(
                     content = entity.content,
                     authorName = entity.author,
                     authorImage = entity.authorImage,
-                    timestamp = entity.timestamp,
+                    timestamp = entity.timestampHHmm,
+                    date = entity.timestampYYYYMMdd
                 )
-                val prevState = if (prevEntity != null) {
+                val prevMessageUiState = prevEntity?.let {
                     MessageUiState(
-                        content = prevEntity.content,
-                        authorName = prevEntity.author,
-                        authorImage = prevEntity.authorImage,
-                        timestamp = prevEntity.timestamp
+                        content = it.content,
+                        authorName = it.author,
+                        authorImage = it.authorImage,
+                        timestamp = it.timestampHHmm,
+                        date = entity.timestampYYYYMMdd
                     )
-                } else {
-                    null
                 }
 
                 val viewModel = MessageViewModel(
                     repository = messageRepository,
-                    initialState = state,
-                    prevState = prevState
+                    initialState = messageUiState,
+                    prevState = prevMessageUiState
                 )
                 tempList.add(viewModel)
             }

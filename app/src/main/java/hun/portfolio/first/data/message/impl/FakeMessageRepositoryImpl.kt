@@ -18,8 +18,7 @@ class FakeMessageRepositoryImpl : MessageRepository {
 
     override suspend fun sendMessage(
         content: String,
-        authorName: String,
-        timestamp: String
+        authorName: String
     ): MessageResponse {
         val emptyResponse = MessageResponse(
             code = "500",

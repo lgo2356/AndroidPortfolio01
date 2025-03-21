@@ -12,6 +12,6 @@ data class MessageResponse(
 )
 
 data class MessageResponseData(
+//    val fullTimestamp: String,
     val timestamp: String,
-    val formattedTimestamp: String,
 )
