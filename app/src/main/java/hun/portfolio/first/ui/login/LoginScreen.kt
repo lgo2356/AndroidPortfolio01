@@ -103,24 +103,6 @@ fun LoginButtonColumn(
         ) {
             onGoogleClick()
         }
-        Spacer(modifier = Modifier.padding(vertical = 2.dp))
-        LoginButton(
-            text = "카카오톡 계정으로 로그인",
-            textColor = Color.Black,
-            backgroundColor = KakaoYellow,
-            icon = R.drawable.kakaotalk_logo,
-        ) {
-
-        }
-        Spacer(modifier = Modifier.padding(vertical = 2.dp))
-        LoginButton(
-            text = "네이버 계정으로 로그인",
-            textColor = Color.White,
-            backgroundColor = NaverGreen,
-            icon = R.drawable.naver_logo,
-        ) {
-
-        }
         Spacer(modifier = Modifier.padding(vertical = 4.dp))
         Text(
             text = "비회원 로그인",
@@ -130,6 +112,25 @@ fun LoginButtonColumn(
                 .padding(vertical = 8.dp)
                 .clickable { onGuestClick() }
         )
+
+//        Spacer(modifier = Modifier.padding(vertical = 2.dp))
+//        LoginButton(
+//            text = "카카오톡 계정으로 로그인",
+//            textColor = Color.Black,
+//            backgroundColor = KakaoYellow,
+//            icon = R.drawable.kakaotalk_logo,
+//        ) {
+//
+//        }
+//        Spacer(modifier = Modifier.padding(vertical = 2.dp))
+//        LoginButton(
+//            text = "네이버 계정으로 로그인",
+//            textColor = Color.White,
+//            backgroundColor = NaverGreen,
+//            icon = R.drawable.naver_logo,
+//        ) {
+//
+//        }
     }
 }
 

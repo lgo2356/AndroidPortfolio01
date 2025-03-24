@@ -30,15 +30,24 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import hun.portfolio.first.ui.AppBar
+import hun.portfolio.first.ui.theme.PortfolioTheme
 
 @Composable
 fun ChatScreen(
-    viewModel: ChatViewModel,
+    chatViewModel: ChatViewModel,
     messageViewModels: List<MessageViewModel>,
     onMessageSent: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val chatUiState = chatViewModel.uiState.collectAsState()
+
     Scaffold(
+        topBar = {
+            ChannelAppBar(
+                title = chatUiState.value.channelTitle
+            )
+        },
         contentWindowInsets = ScaffoldDefaults
             .contentWindowInsets
             .exclude(WindowInsets.ime)
@@ -50,7 +59,6 @@ fun ChatScreen(
                 .padding(paddingValue),
         ) {
             Messages(
-                chatViewModel = viewModel,
                 messageViewModels = messageViewModels,
                 modifier = Modifier
                     .padding(horizontal = 16.dp)
@@ -63,7 +71,6 @@ fun ChatScreen(
 
 @Composable
 fun Messages(
-    chatViewModel: ChatViewModel,
     messageViewModels: List<MessageViewModel>,
     modifier: Modifier
 ) {
@@ -73,7 +80,6 @@ fun Messages(
     val imeHeight = WindowInsets.ime.getBottom(density)
     val extraScroll = with(density) { 48.dp.toPx() + insets.getBottom(density) }
 
-    val chatUiState = chatViewModel.uiState.collectAsState()
     val messageUiStates = messageViewModels.map {
         it.uiState.collectAsState()
     }
@@ -135,4 +141,30 @@ fun DayHeader(dayString: String) {
 @Composable
 fun DayHeaderPreview() {
     DayHeader("2025년 3월 21일")
+}
+
+@Composable
+fun ChannelAppBar(
+    title: String,
+    modifier: Modifier = Modifier
+) {
+    AppBar(
+        title = {
+            Text(
+                text = title,
+                style = MaterialTheme.typography.titleMedium
+            )
+        },
+        modifier = modifier
+    )
+}
+
+@Preview
+@Composable
+fun ChannelAppBarPreview() {
+    PortfolioTheme {
+        ChannelAppBar(
+            title = "Test"
+        )
+    }
 }

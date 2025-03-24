@@ -4,4 +4,5 @@ interface MessageRepository {
     suspend fun getMessages(): List<MessageEntity>
     suspend fun addMessage(content: String, authorName: String, timestamp: String)
     suspend fun sendMessage(content: String, authorName: String): MessageResponse
+    suspend fun getAIMessage(): AiMessageResponse
 }

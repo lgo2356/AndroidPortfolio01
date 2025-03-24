@@ -9,7 +9,7 @@ fun ChatRoute(chatViewModel: ChatViewModel) {
     val messageViewModels by chatViewModel.messageViewModels.collectAsStateWithLifecycle()
 
     ChatScreen(
-        viewModel = chatViewModel,
+        chatViewModel = chatViewModel,
         messageViewModels = messageViewModels,
         onMessageSent = { content ->
             chatViewModel.addMessage(

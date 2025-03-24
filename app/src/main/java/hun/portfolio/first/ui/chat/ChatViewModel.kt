@@ -10,10 +10,13 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 data class ChatUiState(
+    val channelTitle: String = "01",
     val lastDate: String = "",
 )
 
-class ChatViewModel(private val messageRepository: MessageRepository) : ViewModel() {
+class ChatViewModel(
+    private val messageRepository: MessageRepository
+) : ViewModel() {
     private val _uiState = MutableStateFlow(ChatUiState())
     val uiState: StateFlow<ChatUiState> = _uiState
 
@@ -30,27 +33,31 @@ class ChatViewModel(private val messageRepository: MessageRepository) : ViewMode
         } else {
             null
         }
-        val viewModel = MessageViewModel(
+        val messageViewModel = MessageViewModel(
             repository = messageRepository,
             initialState = messageState,
             prevState = prevViewModel?.uiState?.value
         )
 
-        viewModel.send()
+        messageViewModel.onSentMessage = {
+            val messageViewModel2 = MessageViewModel(
+                repository = messageRepository,
+                initialState = MessageUiState(
+                    content = "",
+                    authorName = "assistant",
+                    timestamp = "",
+                ),
+                prevState = messageViewModel.uiState.value
+            )
 
-        _messageViewModels.update { it + listOf(viewModel) }
+            messageViewModel2.get()
 
-//        viewModelScope.launch {
-//            if (data != null) {
-//                val reMessage = MessageEntity(
-//                    author = "assistant",
-//                    content = data.content,
-//                    timestamp = data.formattedTimestamp
-//                )
-//
-//                _uiState.value.messages.add(0, reMessage)
-//            }
-//        }
+            _messageViewModels.update { it + listOf(messageViewModel2) }
+        }
+
+        messageViewModel.send()
+
+        _messageViewModels.update { it + listOf(messageViewModel) }
     }
 
     private fun refreshAll() {

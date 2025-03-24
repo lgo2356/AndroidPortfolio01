@@ -2,15 +2,18 @@ package hun.portfolio.first.data.message
 
 import com.google.gson.annotations.SerializedName
 
-data class MessageResponse(
+data class AiMessageResponse(
     val code: String,
     val message: String,
     val request: MessageRequest?,
 
     @SerializedName("response")
-    val data: MessageResponseData?,
+    val data: AiMessageResponseData?,
 )
 
-data class MessageResponseData(
-    val timestamp: String,
+data class AiMessageResponseData(
+    val role: String,
+    val content: String,
+    val name: String,
+    val timestamp: String
 )

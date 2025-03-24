@@ -33,6 +33,8 @@ class MessageViewModel(
     private val _uiState = MutableStateFlow(initialState)
     val uiState = _uiState.asStateFlow()
 
+    lateinit var onSentMessage: () -> Unit
+
     init {
         val authorName = _uiState.value.authorName
         val isAuthorChanged = if (prevState != null) {
@@ -98,6 +100,57 @@ class MessageViewModel(
 
             _uiState.update {
                 it.copy(
+                    timestamp = timestamp,
+                    date = date,
+                    isSending = false,
+                    isAuthorChanged = isAuthorChanged,
+                    isTimestampChanged = isTimestampChanged
+                )
+            }
+
+            onSentMessage()
+        }
+    }
+
+    fun get() {
+        viewModelScope.launch {
+            _uiState.update { it.copy(isSending = true) }
+
+            val response = repository.getAIMessage()
+
+            val content = response.data?.content ?: ""
+
+            val authorName = _uiState.value.authorName
+
+            val dateParser = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSX", Locale.getDefault())
+            val timestamp: String = response.data?.timestamp?.let {
+                val dateFormatter = SimpleDateFormat("HH:mm", Locale.getDefault())
+                val date: Date = dateParser.parse(it) ?: Date()
+
+                dateFormatter.format(date)
+            } ?: "error_timestamp"
+            val date: String = response.data?.timestamp?.let {
+                val dateFormatter = SimpleDateFormat("yyyy년 MM월 dd일", Locale.getDefault())
+                val date: Date = dateParser.parse(it) ?: Date()
+
+                dateFormatter.format(date)
+            } ?: "error_date"
+
+            val isAuthorChanged = if (prevState != null) {
+                authorName != prevState.authorName
+            } else {
+                true
+            }
+
+            val isTimestampChanged = if (prevState != null) {
+                timestamp != prevState.timestamp
+            } else {
+                true
+            }
+
+            _uiState.update {
+                it.copy(
+                    content = content,
                     timestamp = timestamp,
                     date = date,
                     isSending = false,

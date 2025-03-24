@@ -2,17 +2,23 @@ package hun.portfolio.first.data
 
 import com.google.gson.GsonBuilder
 import hun.portfolio.first.BuildConfig
+import hun.portfolio.first.data.message.AiMessageRequest
+import hun.portfolio.first.data.message.AiMessageResponse
 import hun.portfolio.first.data.message.MessageRequest
 import hun.portfolio.first.data.message.MessageResponse
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.Body
+import retrofit2.http.GET
 import retrofit2.http.POST
 
 interface ApiService {
     @POST("sendMessage")
     suspend fun sendMessage(@Body message: MessageRequest): Response<MessageResponse>
+
+    @POST("getMessageFromAI")
+    suspend fun getMessageFromAI(@Body request: AiMessageRequest): Response<AiMessageResponse>
 }
 
 object ApiClient {
