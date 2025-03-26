@@ -112,7 +112,7 @@ class MessageViewModel(
         }
     }
 
-    fun get() {
+    fun get(onDone: () -> Unit) {
         viewModelScope.launch {
             _uiState.update { it.copy(isSending = true) }
 
@@ -158,6 +158,8 @@ class MessageViewModel(
                     isTimestampChanged = isTimestampChanged
                 )
             }
+
+            onDone()
         }
     }
 }

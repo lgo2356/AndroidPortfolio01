@@ -50,9 +50,9 @@ class ChatViewModel(
                 prevState = messageViewModel.uiState.value
             )
 
-            messageViewModel2.get()
-
-            _messageViewModels.update { it + listOf(messageViewModel2) }
+            messageViewModel2.get {
+                _messageViewModels.update { it + listOf(messageViewModel2) }
+            }
         }
 
         messageViewModel.send()
