@@ -2,9 +2,11 @@ package hun.portfolio.first.ui.chat
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.paddingFrom
 import androidx.compose.foundation.layout.size
@@ -31,32 +33,44 @@ fun Message(viewModel: MessageViewModel) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val borderColor = MaterialTheme.colorScheme.primary
 
-    Row(modifier = Modifier) {
+    var horizontalAlignment: Arrangement.Horizontal = Arrangement.Start
+
+    if (uiState.isUserMe) {
+        horizontalAlignment = Arrangement.End
+    }
+
+    Row(
+        modifier = Modifier
+            .fillMaxWidth(),
+        horizontalArrangement = horizontalAlignment
+    ) {
         if (uiState.isAuthorChanged || uiState.isTimestampChanged) {
-            Image(
-                modifier = Modifier
-                    .size(42.dp)
-                    .border(1.5.dp, borderColor, CircleShape)
-                    .border(3.dp, MaterialTheme.colorScheme.surface, CircleShape)
-                    .clip(CircleShape)
-                    .align(Alignment.Top),
-                painter = painterResource(uiState.authorImage),
-                contentScale = ContentScale.Crop,
-                contentDescription = null,
-            )
+            if (!uiState.isUserMe) {
+                Image(
+                    modifier = Modifier
+                        .size(42.dp)
+                        .border(1.5.dp, borderColor, CircleShape)
+                        .border(3.dp, MaterialTheme.colorScheme.surface, CircleShape)
+                        .clip(CircleShape)
+                        .align(Alignment.Top),
+                    painter = painterResource(uiState.authorImage),
+                    contentScale = ContentScale.Crop,
+                    contentDescription = null,
+                )
+            }
         } else {
             Spacer(modifier = Modifier.width(42.dp))
         }
         Spacer(modifier = Modifier.padding(8.dp))
         Column {
-            if (uiState.isAuthorChanged || uiState.isTimestampChanged) {
-                AuthorNameTimestamp(
-                    authorName = uiState.authorName,
-                    timestamp = uiState.timestamp,
+            if (!uiState.isUserMe && (uiState.isAuthorChanged || uiState.isTimestampChanged)) {
+                AuthorName(
+                    authorName = uiState.authorName
                 )
             }
             ChatItemBubble(
                 content = uiState.content,
+                timestamp = uiState.timestamp,
                 isUserMe = uiState.isUserMe
             )
         }
@@ -73,10 +87,7 @@ fun Message(viewModel: MessageViewModel) {
 }
 
 @Composable
-private fun AuthorNameTimestamp(
-    authorName: String,
-    timestamp: String,
-) {
+private fun AuthorName(authorName: String) {
     Row {
         Text(
             text = authorName,
@@ -85,24 +96,17 @@ private fun AuthorNameTimestamp(
                 .alignBy(LastBaseline)
                 .paddingFrom(LastBaseline, after = 8.dp)
         )
-        Spacer(modifier = Modifier.width(8.dp))
-        Text(
-            text = timestamp,
-            style = MaterialTheme.typography.bodySmall,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-            modifier = Modifier.alignBy(LastBaseline)
-        )
     }
 }
 
 @Preview
 @Composable
 private fun AuthorNameTimestampMe() {
-    AuthorNameTimestamp(messageByMe.authorName, messageByMe.timestamp)
+    AuthorName(messageByMe.authorName)
 }
 
 @Preview
 @Composable
 private fun AuthorNameTimestampOther() {
-    AuthorNameTimestamp(messageByMe.authorName, messageByMe.timestamp)
+    AuthorName(messageByMe.authorName)
 }

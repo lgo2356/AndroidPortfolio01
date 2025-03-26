@@ -2,6 +2,7 @@ package hun.portfolio.first.ui.chat
 
 import androidx.compose.foundation.gestures.animateScrollBy
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -26,6 +27,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -37,8 +39,7 @@ import hun.portfolio.first.ui.theme.PortfolioTheme
 fun ChatScreen(
     chatViewModel: ChatViewModel,
     messageViewModels: List<MessageViewModel>,
-    onMessageSent: (String) -> Unit,
-    modifier: Modifier = Modifier
+    onMessageSent: (String) -> Unit
 ) {
     val chatUiState = chatViewModel.uiState.collectAsState()
 
@@ -114,6 +115,10 @@ fun Messages(
 
                 Message(item)
                 Spacer(modifier = Modifier.height(4.dp))
+
+                if (!curMessageUiState.isUserMe) {
+                    Spacer(modifier = Modifier.height(4.dp))
+                }
             }
         }
     }
@@ -144,19 +149,23 @@ fun DayHeaderPreview() {
 }
 
 @Composable
-fun ChannelAppBar(
-    title: String,
-    modifier: Modifier = Modifier
-) {
-    AppBar(
-        title = {
-            Text(
-                text = title,
-                style = MaterialTheme.typography.titleMedium
-            )
-        },
-        modifier = modifier
-    )
+fun ChannelAppBar(title: String) {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .shadow(elevation = 3.dp)
+    ) {
+        AppBar(
+            title = {
+                Text(
+                    text = title,
+                    textAlign = TextAlign.Center,
+                    style = MaterialTheme.typography.titleMedium,
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
+        )
+    }
 }
 
 @Preview
