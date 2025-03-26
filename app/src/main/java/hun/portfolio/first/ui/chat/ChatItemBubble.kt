@@ -43,7 +43,7 @@ fun ChatItemBubble(
         Surface(
             color = bubbleBgColor,
             shape = chatBubbleShape,
-            modifier = Modifier.sizeIn(maxWidth = 210.dp)
+            modifier = Modifier.sizeIn(maxWidth = 200.dp)
         ) {
             Text(
                 text = content,
