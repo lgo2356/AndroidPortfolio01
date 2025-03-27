@@ -16,7 +16,7 @@ fun ChatRoute(chatViewModel: ChatViewModel) {
                 MessageUiState(
                     content = content,
                     authorName = "me",
-                    timestamp = "",
+                    timestamp = ""
                 )
             )
         }

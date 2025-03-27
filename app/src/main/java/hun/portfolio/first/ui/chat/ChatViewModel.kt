@@ -10,12 +10,13 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 data class ChatUiState(
-    val channelTitle: String = "01",
+    val channelTitle: String = "initial_title",
     val lastDate: String = "",
 )
 
 class ChatViewModel(
-    private val messageRepository: MessageRepository
+    private val messageRepository: MessageRepository,
+    chatId: Long
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(ChatUiState())
     val uiState: StateFlow<ChatUiState> = _uiState
@@ -24,6 +25,8 @@ class ChatViewModel(
     val messageViewModels: StateFlow<List<MessageViewModel>> = _messageViewModels
 
     init {
+        _uiState.update { ChatUiState(channelTitle = chatId.toString()) }
+
         refreshAll()
     }
 
@@ -71,14 +74,12 @@ class ChatViewModel(
                 if (prevEntity != null) {
                     if (prevEntity.timestampYYYYMMdd != entity.timestampYYYYMMdd) {
                         _uiState.update { ChatUiState(lastDate = entity.timestampYYYYMMdd) }
-                    } else {
-//                        _uiState.update { ChatUiState(isDateChanged = false) }
                     }
                 }
 
                 val messageUiState = MessageUiState(
                     content = entity.content,
-                    authorName = entity.author,
+                    authorName = entity.userName,
                     authorImage = entity.authorImage,
                     timestamp = entity.timestampHHmm,
                     date = entity.timestampYYYYMMdd
@@ -86,7 +87,7 @@ class ChatViewModel(
                 val prevMessageUiState = prevEntity?.let {
                     MessageUiState(
                         content = it.content,
-                        authorName = it.author,
+                        authorName = it.userName,
                         authorImage = it.authorImage,
                         timestamp = it.timestampHHmm,
                         date = entity.timestampYYYYMMdd
@@ -106,11 +107,17 @@ class ChatViewModel(
     }
 
     companion object {
-        fun provideFactory(messageRepository: MessageRepository): ViewModelProvider.Factory =
+        fun provideFactory(
+            messageRepository: MessageRepository,
+            chatId: Long
+        ): ViewModelProvider.Factory =
             object : ViewModelProvider.Factory {
                 override fun <T : ViewModel> create(modelClass: Class<T>): T {
                     @Suppress("UNCHECKED_CAST")
-                    return ChatViewModel(messageRepository = messageRepository) as T
+                    return ChatViewModel(
+                        messageRepository = messageRepository,
+                        chatId = chatId
+                    ) as T
                 }
             }
     }

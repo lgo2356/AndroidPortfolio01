@@ -1,5 +1,8 @@
 package hun.portfolio.first.ui.chat
 
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.util.Base64
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import hun.portfolio.first.R
@@ -23,6 +26,7 @@ data class MessageUiState(
     val isSending: Boolean = false,
     val isAuthorChanged: Boolean = false,
     val isTimestampChanged: Boolean = false,
+    val profileImage: Bitmap? = null
 )
 
 class MessageViewModel(
@@ -116,6 +120,10 @@ class MessageViewModel(
         viewModelScope.launch {
             _uiState.update { it.copy(isSending = true) }
 
+            val base64 = repository.getAIProfileImage().data!!.base64
+            val bytes = Base64.decode(base64, Base64.DEFAULT)
+            val bitmap: Bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
+
             val response = repository.getAIMessage()
 
             val content = response.data?.content ?: ""
@@ -155,7 +163,8 @@ class MessageViewModel(
                     date = date,
                     isSending = false,
                     isAuthorChanged = isAuthorChanged,
-                    isTimestampChanged = isTimestampChanged
+                    isTimestampChanged = isTimestampChanged,
+                    profileImage = bitmap
                 )
             }
 

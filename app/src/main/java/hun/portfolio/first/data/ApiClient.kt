@@ -4,6 +4,7 @@ import com.google.gson.GsonBuilder
 import hun.portfolio.first.BuildConfig
 import hun.portfolio.first.data.message.AiMessageRequest
 import hun.portfolio.first.data.message.AiMessageResponse
+import hun.portfolio.first.data.message.AiProfileImageResponse
 import hun.portfolio.first.data.message.MessageRequest
 import hun.portfolio.first.data.message.MessageResponse
 import retrofit2.Response
@@ -19,6 +20,9 @@ interface ApiService {
 
     @POST("getMessageFromAI")
     suspend fun getMessageFromAI(@Body request: AiMessageRequest): Response<AiMessageResponse>
+
+    @GET("getAIProfileImage")
+    suspend fun getAIProfileImage(): Response<AiProfileImageResponse>
 }
 
 object ApiClient {

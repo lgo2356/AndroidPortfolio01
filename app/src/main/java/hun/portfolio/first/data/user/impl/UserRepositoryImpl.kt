@@ -13,7 +13,10 @@ class UserRepositoryImpl(
 
     override suspend fun addUser(id: String, name: String): Boolean {
         if (!isExist(id)) {
-            val user = UserEntity(id, name)
+            val user = UserEntity(
+                id,
+                name
+            )
 
             userDao.addUser(user)
 

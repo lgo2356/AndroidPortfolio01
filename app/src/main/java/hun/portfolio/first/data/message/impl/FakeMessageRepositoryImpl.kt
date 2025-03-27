@@ -1,6 +1,7 @@
 package hun.portfolio.first.data.message.impl
 
 import hun.portfolio.first.data.message.AiMessageResponse
+import hun.portfolio.first.data.message.AiProfileImageResponse
 import hun.portfolio.first.data.message.MessageEntity
 import hun.portfolio.first.data.message.MessageRepository
 import hun.portfolio.first.data.message.MessageResponse
@@ -32,6 +33,10 @@ class FakeMessageRepositoryImpl : MessageRepository {
     }
 
     override suspend fun getAIMessage(): AiMessageResponse {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun getAIProfileImage(): AiProfileImageResponse {
         TODO("Not yet implemented")
     }
 }

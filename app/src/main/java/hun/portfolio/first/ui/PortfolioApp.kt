@@ -20,6 +20,7 @@ fun PortfolioApp(appContainer: AppContainer) {
             appContainer = appContainer,
             navController = navController,
             navigateToChat = navigationActions.navigateToChat,
+            navigateToChatList = navigationActions.navigateToChatList
         )
     }
 }

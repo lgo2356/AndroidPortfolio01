@@ -20,6 +20,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.graphics.painter.BitmapPainter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.LastBaseline
 import androidx.compose.ui.res.painterResource
@@ -46,17 +48,34 @@ fun Message(viewModel: MessageViewModel) {
     ) {
         if (uiState.isAuthorChanged || uiState.isTimestampChanged) {
             if (!uiState.isUserMe) {
-                Image(
-                    modifier = Modifier
-                        .size(42.dp)
-                        .border(1.5.dp, borderColor, CircleShape)
-                        .border(3.dp, MaterialTheme.colorScheme.surface, CircleShape)
-                        .clip(CircleShape)
-                        .align(Alignment.Top),
-                    painter = painterResource(uiState.authorImage),
-                    contentScale = ContentScale.Crop,
-                    contentDescription = null,
-                )
+                val bitmap = uiState.profileImage?.asImageBitmap()
+
+                if (bitmap == null) {
+                    Image(
+                        painter = painterResource(uiState.authorImage),
+                        contentScale = ContentScale.Crop,
+                        contentDescription = null,
+                        modifier = Modifier
+                            .size(42.dp)
+                            .border(1.5.dp, borderColor, CircleShape)
+                            .border(3.dp, MaterialTheme.colorScheme.surface, CircleShape)
+                            .clip(CircleShape)
+                            .align(Alignment.Top),
+                    )
+                } else {
+                    Image(
+//                        bitmap = uiState.profileImage?.asImageBitmap()!!,
+                        painter = BitmapPainter(uiState.profileImage?.asImageBitmap()!!),
+                        contentScale = ContentScale.Crop,
+                        contentDescription = null,
+                        modifier = Modifier
+                            .size(42.dp)
+                            .border(1.5.dp, borderColor, CircleShape)
+                            .border(3.dp, MaterialTheme.colorScheme.surface, CircleShape)
+                            .clip(CircleShape)
+                            .align(Alignment.Top),
+                    )
+                }
             }
         } else {
             Spacer(modifier = Modifier.width(42.dp))

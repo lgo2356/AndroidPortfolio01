@@ -4,6 +4,7 @@ import hun.portfolio.first.data.ApiService
 import hun.portfolio.first.data.message.AiMessageRequest
 import hun.portfolio.first.data.message.AiMessageResponse
 import hun.portfolio.first.data.message.AiMessageResponseData
+import hun.portfolio.first.data.message.AiProfileImageResponse
 import hun.portfolio.first.data.message.MessageDao
 import hun.portfolio.first.data.message.MessageEntity
 import hun.portfolio.first.data.message.MessageRepository
@@ -28,9 +29,10 @@ class MessageRepositoryImpl(
     ) {
         val entity = MessageEntity(
             content = content,
-            author = authorName,
+            userName = authorName,
             timestampYYYYMMdd = timestamp,
-            timestampHHmm = timestamp
+            timestampHHmm = timestamp,
+            profileImagePath = ""
         )
 
         messageDao.addMessage(entity)
@@ -71,9 +73,10 @@ class MessageRepositoryImpl(
                 messageDao.addMessage(
                     MessageEntity(
                         content = content,
-                        author = authorName,
+                        userName = authorName,
                         timestampYYYYMMdd = timestampYYYYMMdd,
-                        timestampHHmm = timestampHHmm
+                        timestampHHmm = timestampHHmm,
+                        profileImagePath = ""
                     )
                 )
             } else if (response.code() == 204) {
@@ -126,9 +129,10 @@ class MessageRepositoryImpl(
                 messageDao.addMessage(
                     MessageEntity(
                         content = data.content,
-                        author = data.name,
+                        userName = data.name,
                         timestampYYYYMMdd = timestampYYYYMMdd,
-                        timestampHHmm = timestampHHmm
+                        timestampHHmm = timestampHHmm,
+                        profileImagePath = ""
                     )
                 )
             } else if (response.code() == 204) {
@@ -143,6 +147,28 @@ class MessageRepositoryImpl(
                 code = response.code().toString(),
                 message = "Error body.",
                 request = null,
+                data = null,
+            )
+        }
+    }
+
+    override suspend fun getAIProfileImage(): AiProfileImageResponse {
+        val response = apiService.getAIProfileImage()
+
+        return if (response.isSuccessful) {
+            if (response.code() == 200) {
+                response.body()?.data!!
+            } else if (response.code() == 204) {
+                //TODO: Handle empty body.
+            } else {
+                //TODO: Throw error message.
+            }
+
+            response.body()!!
+        } else {
+            AiProfileImageResponse(
+                code = response.code().toString(),
+                message = "Error body.",
                 data = null,
             )
         }
