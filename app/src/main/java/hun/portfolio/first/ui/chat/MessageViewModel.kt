@@ -1,13 +1,11 @@
 package hun.portfolio.first.ui.chat
 
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.util.Base64
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import hun.portfolio.first.R
 import hun.portfolio.first.data.message.MessageRepository
-import kotlinx.coroutines.delay
+import hun.portfolio.first.extension.toBitmap
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -32,6 +30,7 @@ data class MessageUiState(
 class MessageViewModel(
     private val repository: MessageRepository,
     private val prevState: MessageUiState?,
+    private val chatId: Long,
     initialState: MessageUiState,
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(initialState)
@@ -68,6 +67,7 @@ class MessageViewModel(
             _uiState.update { it.copy(isSending = true) }
 
             val response = repository.sendMessage(
+                chatId = chatId,
                 content = _uiState.value.content,
                 authorName = _uiState.value.authorName
             )
@@ -100,8 +100,6 @@ class MessageViewModel(
                 true
             }
 
-            delay(500)
-
             _uiState.update {
                 it.copy(
                     timestamp = timestamp,
@@ -120,15 +118,13 @@ class MessageViewModel(
         viewModelScope.launch {
             _uiState.update { it.copy(isSending = true) }
 
-            val base64 = repository.getAIProfileImage().data!!.base64
-            val bytes = Base64.decode(base64, Base64.DEFAULT)
-            val bitmap: Bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
+            val bitmap = repository.getAIProfileImage().data?.base64?.toBitmap()
 
-            val response = repository.getAIMessage()
+            val response = repository.getAIMessage(chatId = chatId)
 
-            val content = response.data?.content ?: ""
+            val content = response.data?.content ?: "error_content"
 
-            val authorName = _uiState.value.authorName
+            val authorName = response.data?.name ?: "error_name"
 
             val dateParser = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSX", Locale.getDefault())
             val timestamp: String = response.data?.timestamp?.let {
@@ -159,6 +155,7 @@ class MessageViewModel(
             _uiState.update {
                 it.copy(
                     content = content,
+                    authorName = authorName,
                     timestamp = timestamp,
                     date = date,
                     isSending = false,

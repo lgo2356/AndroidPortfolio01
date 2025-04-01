@@ -1,22 +1,29 @@
 package hun.portfolio.first.ui.chat
 
+import android.graphics.Bitmap
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import hun.portfolio.first.data.chat.ChatRepository
 import hun.portfolio.first.data.message.MessageRepository
+import hun.portfolio.first.extension.toBitmap
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 data class ChatUiState(
+    val id: Long = -1,
     val channelTitle: String = "initial_title",
-    val lastDate: String = "",
+    val lastMessage: String = "initial_last_message",
+    val lastMessageTime: String = "initial_last_message_time",
+    val profileImage: Bitmap? = null,
 )
 
 class ChatViewModel(
+    private val chatRepository: ChatRepository,
     private val messageRepository: MessageRepository,
-    chatId: Long
+    private val chatId: Long,
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(ChatUiState())
     val uiState: StateFlow<ChatUiState> = _uiState
@@ -25,9 +32,19 @@ class ChatViewModel(
     val messageViewModels: StateFlow<List<MessageViewModel>> = _messageViewModels
 
     init {
-        _uiState.update { ChatUiState(channelTitle = chatId.toString()) }
+        viewModelScope.launch {
+            val title = chatRepository.getChat(chatId).name
+            val bitmap = messageRepository.getAIProfileImage().data?.base64?.toBitmap()
 
-        refreshAll()
+            _uiState.update {
+                ChatUiState(
+                    channelTitle = title,
+                    profileImage = bitmap
+                )
+            }
+
+            refreshAll()
+        }
     }
 
     fun addMessage(messageState: MessageUiState) {
@@ -38,19 +55,21 @@ class ChatViewModel(
         }
         val messageViewModel = MessageViewModel(
             repository = messageRepository,
+            prevState = prevViewModel?.uiState?.value,
+            chatId = chatId,
             initialState = messageState,
-            prevState = prevViewModel?.uiState?.value
         )
 
         messageViewModel.onSentMessage = {
             val messageViewModel2 = MessageViewModel(
                 repository = messageRepository,
+                prevState = messageViewModel.uiState.value,
+                chatId = chatId,
                 initialState = MessageUiState(
                     content = "",
                     authorName = "assistant",
                     timestamp = "",
-                ),
-                prevState = messageViewModel.uiState.value
+                )
             )
 
             messageViewModel2.get {
@@ -65,30 +84,26 @@ class ChatViewModel(
 
     private fun refreshAll() {
         viewModelScope.launch {
-            val entities = messageRepository.getMessages()
+            val entities = messageRepository.getMessages(chatId = chatId)
             val tempList: MutableList<MessageViewModel> = mutableListOf()
 
             entities.mapIndexed { index, entity ->
                 val prevEntity = entities.getOrNull(index - 1)
 
-                if (prevEntity != null) {
-                    if (prevEntity.timestampYYYYMMdd != entity.timestampYYYYMMdd) {
-                        _uiState.update { ChatUiState(lastDate = entity.timestampYYYYMMdd) }
-                    }
-                }
-
                 val messageUiState = MessageUiState(
                     content = entity.content,
                     authorName = entity.userName,
                     authorImage = entity.authorImage,
+                    profileImage = _uiState.value.profileImage,
                     timestamp = entity.timestampHHmm,
-                    date = entity.timestampYYYYMMdd
+                    date = entity.timestampYYYYMMdd,
                 )
                 val prevMessageUiState = prevEntity?.let {
                     MessageUiState(
                         content = it.content,
                         authorName = it.userName,
                         authorImage = it.authorImage,
+                        profileImage = _uiState.value.profileImage,
                         timestamp = it.timestampHHmm,
                         date = entity.timestampYYYYMMdd
                     )
@@ -96,8 +111,9 @@ class ChatViewModel(
 
                 val viewModel = MessageViewModel(
                     repository = messageRepository,
-                    initialState = messageUiState,
-                    prevState = prevMessageUiState
+                    prevState = prevMessageUiState,
+                    chatId = chatId,
+                    initialState = messageUiState
                 )
                 tempList.add(viewModel)
             }
@@ -108,6 +124,7 @@ class ChatViewModel(
 
     companion object {
         fun provideFactory(
+            chatRepository: ChatRepository,
             messageRepository: MessageRepository,
             chatId: Long
         ): ViewModelProvider.Factory =
@@ -115,6 +132,7 @@ class ChatViewModel(
                 override fun <T : ViewModel> create(modelClass: Class<T>): T {
                     @Suppress("UNCHECKED_CAST")
                     return ChatViewModel(
+                        chatRepository = chatRepository,
                         messageRepository = messageRepository,
                         chatId = chatId
                     ) as T

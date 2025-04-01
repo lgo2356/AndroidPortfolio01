@@ -18,20 +18,31 @@ class MessageRepositoryImpl(
     private val messageDao: MessageDao,
     private val apiService: ApiService,
 ) : MessageRepository {
+    override suspend fun getMessages(chatId: Long): List<MessageEntity> {
+        return messageDao.getMessages(chatId)
+    }
+
     override suspend fun getMessages(): List<MessageEntity> {
         return messageDao.getAllMessages()
     }
 
+    override suspend fun getLastMessage(chatId: Long): MessageEntity? {
+        return messageDao.getLastMessage(chatId)
+    }
+
     override suspend fun addMessage(
+        chatId: Long,
         content: String,
         authorName: String,
         timestamp: String
     ) {
         val entity = MessageEntity(
+            chatId = chatId,
             content = content,
             userName = authorName,
             timestampYYYYMMdd = timestamp,
             timestampHHmm = timestamp,
+            timestampFull = timestamp,
             profileImagePath = ""
         )
 
@@ -39,13 +50,14 @@ class MessageRepositoryImpl(
     }
 
     override suspend fun sendMessage(
+        chatId: Long,
         content: String,
         authorName: String
     ): MessageResponse {
         // 서버에 메시지 전송
         val response = apiService.sendMessage(
             MessageRequest(
-                chatRoomId = "01",
+                chatRoomId = chatId.toString(),
                 content = content,
             )
         )
@@ -56,26 +68,32 @@ class MessageRepositoryImpl(
                 val dateParser = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSX", Locale.getDefault())
                 val dateFormatter1 = SimpleDateFormat("yyyy년 MM월 dd일", Locale.getDefault())
                 val dateFormatter2 = SimpleDateFormat("HH:mm", Locale.getDefault())
+                val dateFormatter3 = SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS", Locale.getDefault())
                 val rawTimestamp: String? = response.body()?.data?.timestamp
                 val timestampYYYYMMdd: String
                 val timestampHHmm: String
+                val timestampFull: String
 
                 if (rawTimestamp != null) {
                     val date: Date = dateParser.parse(rawTimestamp) ?: Date()
 
                     timestampYYYYMMdd = dateFormatter1.format(date)
                     timestampHHmm = dateFormatter2.format(date)
+                    timestampFull = dateFormatter3.format(date)
                 } else {
                     timestampYYYYMMdd = "error_timestamp"
                     timestampHHmm = "error_timestamp"
+                    timestampFull = "error_timestamp"
                 }
 
                 messageDao.addMessage(
                     MessageEntity(
+                        chatId = chatId,
                         content = content,
                         userName = authorName,
                         timestampYYYYMMdd = timestampYYYYMMdd,
                         timestampHHmm = timestampHHmm,
+                        timestampFull = timestampFull,
                         profileImagePath = ""
                     )
                 )
@@ -98,10 +116,10 @@ class MessageRepositoryImpl(
         }
     }
 
-    override suspend fun getAIMessage(): AiMessageResponse {
+    override suspend fun getAIMessage(chatId: Long): AiMessageResponse {
         val response = apiService.getMessageFromAI(
             request = AiMessageRequest(
-                chatRoomId = "01"
+                chatRoomId = chatId.toString()
             )
         )
 
@@ -112,26 +130,32 @@ class MessageRepositoryImpl(
                 val dateParser = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSX", Locale.getDefault())
                 val dateFormatter1 = SimpleDateFormat("yyyy년 MM월 dd일", Locale.getDefault())
                 val dateFormatter2 = SimpleDateFormat("HH:mm", Locale.getDefault())
+                val dateFormatter3 = SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS", Locale.getDefault())
                 val rawTimestamp: String? = response.body()?.data?.timestamp
                 val timestampYYYYMMdd: String
                 val timestampHHmm: String
+                val timestampFull: String
 
                 if (rawTimestamp != null) {
                     val date: Date = dateParser.parse(rawTimestamp) ?: Date()
 
                     timestampYYYYMMdd = dateFormatter1.format(date)
                     timestampHHmm = dateFormatter2.format(date)
+                    timestampFull = dateFormatter3.format(date)
                 } else {
                     timestampYYYYMMdd = "error_timestamp"
                     timestampHHmm = "error_timestamp"
+                    timestampFull = "error_timestamp"
                 }
 
                 messageDao.addMessage(
                     MessageEntity(
+                        chatId = chatId,
                         content = data.content,
                         userName = data.name,
                         timestampYYYYMMdd = timestampYYYYMMdd,
                         timestampHHmm = timestampHHmm,
+                        timestampFull = timestampFull,
                         profileImagePath = ""
                     )
                 )

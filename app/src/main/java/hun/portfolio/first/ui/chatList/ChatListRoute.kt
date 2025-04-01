@@ -2,13 +2,20 @@ package hun.portfolio.first.ui.chatList
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 
 @Composable
 fun ChatListRoute(
     viewModel: ChatListViewModel,
     navigateToChat: (Long) -> Unit
 ) {
-    ChatListScreen(viewModel = viewModel)
+    val uiState = viewModel.uiState.collectAsStateWithLifecycle()
+
+    ChatListScreen(
+        uiState = uiState.value,
+        onChatContentClick = { id -> navigateToChat(id) },
+        onFloatingButtonClick = { viewModel.addChat() }
+    )
 
     LaunchedEffect(key1 = true) {
         viewModel.uiEvent.collect { evt ->

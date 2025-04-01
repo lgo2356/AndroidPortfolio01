@@ -46,7 +46,8 @@ fun PortfolioNavGraph(
         composable(route = PortfolioDestination.CHAT_LIST_ROUTE) {
             val viewModel: ChatListViewModel = viewModel(
                 factory = ChatListViewModel.provideFactory(
-                    chatRepository = appContainer.chatRepository
+                    chatRepository = appContainer.chatRepository,
+                    messageRepository = appContainer.messageRepository
                 )
             )
 
@@ -58,12 +59,15 @@ fun PortfolioNavGraph(
 
         composable(
             route = "${PortfolioDestination.CHAT_ROUTE}/{chatId}",
-            arguments = listOf(navArgument("chatId") { type = NavType.LongType })
+            arguments = listOf(
+                navArgument("chatId") { type = NavType.LongType }
+            )
         ) { backStackEntry ->
             val chatId = backStackEntry.arguments?.getLong("chatId")!!
 
             val chatViewModel: ChatViewModel = viewModel(
                 factory = ChatViewModel.provideFactory(
+                    chatRepository = appContainer.chatRepository,
                     messageRepository =  appContainer.messageRepository,
                     chatId = chatId
                 )
