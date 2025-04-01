@@ -23,6 +23,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -32,6 +33,9 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import hun.portfolio.first.R
 import hun.portfolio.first.ui.chat.ChannelAppBar
 import hun.portfolio.first.ui.chat.ChatUiState
@@ -83,7 +87,6 @@ fun ChatContent(
             .padding(horizontal = 18.dp, vertical = 8.dp)
             .clickable { onClick() }
     ) {
-//        Spacer(modifier = Modifier.padding(horizontal = 9.dp))
         if (profileImage != null) {
             Image(
                 painter = BitmapPainter(profileImage.asImageBitmap()),
@@ -118,16 +121,15 @@ fun ChatContent(
             )
             Text(
                 text = lastMessage,
-                style = MaterialTheme.typography.labelLarge,
                 fontSize = 14.sp,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
+                maxLines = 2
             )
         }
         Spacer(modifier = Modifier.padding(horizontal = 9.dp))
         Text(
             text = lastMessageTime,
-            style = MaterialTheme.typography.labelLarge,
-            fontSize = 14.sp,
+            fontSize = 12.sp,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             maxLines = 1,
             modifier = Modifier.sizeIn(maxWidth = 48.dp)
@@ -142,6 +144,28 @@ fun FloatingButton(onClick: () -> Unit = {}) {
             imageVector = Icons.Default.Add,
             contentDescription = "Add",
         )
+    }
+}
+
+@Composable
+fun LifecycleObserver(viewModel: ChatListViewModel) {
+    val lifecycleOwner = LocalLifecycleOwner.current
+
+    DisposableEffect(lifecycleOwner) {
+        val observer = LifecycleEventObserver { _, evt ->
+            when (evt) {
+                Lifecycle.Event.ON_RESUME -> {
+                    viewModel.refresh()
+                }
+                else -> {}
+            }
+        }
+
+        lifecycleOwner.lifecycle.addObserver(observer)
+
+        onDispose {
+            lifecycleOwner.lifecycle.removeObserver(observer)
+        }
     }
 }
 

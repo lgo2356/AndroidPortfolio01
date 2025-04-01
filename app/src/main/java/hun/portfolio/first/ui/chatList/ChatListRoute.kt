@@ -17,6 +17,8 @@ fun ChatListRoute(
         onFloatingButtonClick = { viewModel.addChat() }
     )
 
+    LifecycleObserver(viewModel = viewModel)
+
     LaunchedEffect(key1 = true) {
         viewModel.uiEvent.collect { evt ->
             when (evt) {

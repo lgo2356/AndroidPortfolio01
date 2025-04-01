@@ -39,14 +39,13 @@ class ChatListViewModel(
 
     fun addChat() {
         viewModelScope.launch {
-            val index = _uiState.value.chatStates.size
-
-            val entityId = chatRepository.addChat(index.toString())
+            val entityId = chatRepository.addChat("Hanni")
+            val bitmap = messageRepository.getAIProfileImage().data?.base64?.toBitmap()
 
             val newChatState = ChatUiState(
                 id = entityId,
-//                channelTitle = index.toString()
-                channelTitle = "Hanni"
+                channelTitle = "Hanni",
+                profileImage = bitmap
             )
             val newChatStates = _uiState.value.chatStates + listOf(newChatState)
 
@@ -54,7 +53,7 @@ class ChatListViewModel(
         }
     }
 
-    private fun refresh() {
+    fun refresh() {
         viewModelScope.launch {
             val entities = chatRepository.getChats()
             val tempList: MutableList<ChatUiState> = mutableListOf()
@@ -65,10 +64,9 @@ class ChatListViewModel(
 
                 val chatState = ChatUiState(
                     id = entity.id,
-//                    channelTitle = entity.name,
                     channelTitle = "Hanni",
-                    lastMessage = lastMessageEntity?.content ?: "error_message",
-                    lastMessageTime = lastMessageEntity?.timestampHHmm ?: "error_time",
+                    lastMessage = lastMessageEntity?.content ?: "",
+                    lastMessageTime = lastMessageEntity?.timestampHHmm ?: "",
                     profileImage = bitmap
                 )
 

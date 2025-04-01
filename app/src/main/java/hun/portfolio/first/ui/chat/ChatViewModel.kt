@@ -15,8 +15,8 @@ import kotlinx.coroutines.launch
 data class ChatUiState(
     val id: Long = -1,
     val channelTitle: String = "initial_title",
-    val lastMessage: String = "initial_last_message",
-    val lastMessageTime: String = "initial_last_message_time",
+    val lastMessage: String = "",
+    val lastMessageTime: String = "",
     val profileImage: Bitmap? = null,
 )
 
