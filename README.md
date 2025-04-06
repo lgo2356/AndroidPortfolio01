@@ -22,4 +22,10 @@
   <img src="https://github.com/lgo2356/ReadmeAssets/blob/master/chat_screen.jpg"  width="25%" />
 </p>
 
+아키텍처
+---
+<p align="center">
+  <img src="https://github.com/lgo2356/ReadmeAssets/blob/master/app_architecture.png"  width="60%" />
+</p>
+
 **API 서버 Repository :** <https://github.com/lgo2356/AndroidPortfolio01_API>
