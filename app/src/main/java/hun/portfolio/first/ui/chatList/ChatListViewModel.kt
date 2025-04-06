@@ -40,6 +40,10 @@ class ChatListViewModel(
     fun addChat() {
         viewModelScope.launch {
             val entityId = chatRepository.addChat("Hanni")
+
+            val initChatbotResponse = messageRepository.initChatbot(entityId)
+
+            //TODO: 불러오는 동안 다른 이미지로 처리하기
             val bitmap = messageRepository.getAIProfileImage().data?.base64?.toBitmap()
 
             val newChatState = ChatUiState(
@@ -60,6 +64,8 @@ class ChatListViewModel(
 
             for (entity in entities) {
                 val lastMessageEntity: MessageEntity? = messageRepository.getLastMessage(entity.id)
+
+                //TODO: 불러오는 동안 다른 이미지로 처리하기
                 val bitmap = messageRepository.getAIProfileImage().data?.base64?.toBitmap()
 
                 val chatState = ChatUiState(

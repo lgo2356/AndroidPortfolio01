@@ -5,6 +5,9 @@ import hun.portfolio.first.data.message.AiMessageRequest
 import hun.portfolio.first.data.message.AiMessageResponse
 import hun.portfolio.first.data.message.AiMessageResponseData
 import hun.portfolio.first.data.message.AiProfileImageResponse
+import hun.portfolio.first.data.message.BaseResponse
+import hun.portfolio.first.data.message.InitChatbotRequest
+import hun.portfolio.first.data.message.InitChatbotResponse
 import hun.portfolio.first.data.message.MessageDao
 import hun.portfolio.first.data.message.MessageEntity
 import hun.portfolio.first.data.message.MessageRepository
@@ -194,6 +197,33 @@ class MessageRepositoryImpl(
                 code = response.code().toString(),
                 message = "Error body.",
                 data = null,
+            )
+        }
+    }
+
+    override suspend fun initChatbot(chatRoomId: Long): BaseResponse<Boolean> {
+        val response = apiService.initChatbot(
+            request = InitChatbotRequest(
+                chatRoomId = chatRoomId.toString()
+            )
+        )
+
+        return if (response.isSuccessful) {
+            if (response.code() == 200) {
+                response.body()?.data!!
+            } else if (response.code() == 204) {
+                //TODO: Handle empty body.
+            } else {
+                //TODO: Throw error message.
+            }
+
+            response.body()!!
+        } else {
+            InitChatbotResponse(
+                code = response.code().toString(),
+                message = "Error body.",
+                request = "",
+                data = false,
             )
         }
     }

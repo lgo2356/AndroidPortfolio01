@@ -5,6 +5,8 @@ import hun.portfolio.first.BuildConfig
 import hun.portfolio.first.data.message.AiMessageRequest
 import hun.portfolio.first.data.message.AiMessageResponse
 import hun.portfolio.first.data.message.AiProfileImageResponse
+import hun.portfolio.first.data.message.BaseResponse
+import hun.portfolio.first.data.message.InitChatbotRequest
 import hun.portfolio.first.data.message.MessageRequest
 import hun.portfolio.first.data.message.MessageResponse
 import retrofit2.Response
@@ -23,6 +25,9 @@ interface ApiService {
 
     @GET("getAIProfileImage")
     suspend fun getAIProfileImage(): Response<AiProfileImageResponse>
+
+    @POST("initChatbot")
+    suspend fun initChatbot(@Body request: InitChatbotRequest): Response<BaseResponse<Boolean>>
 }
 
 object ApiClient {

@@ -20,4 +20,5 @@ interface MessageRepository {
 
     suspend fun getAIMessage(chatId: Long): AiMessageResponse
     suspend fun getAIProfileImage(): AiProfileImageResponse
+    suspend fun initChatbot(chatRoomId: Long): BaseResponse<Boolean>
 }
