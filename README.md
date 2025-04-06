@@ -1,6 +1,7 @@
 개요
 ---
 - OpenAI API gpt-4-mini 모델을 활용한 AI와 대화하는 안드로이드 앱
+- 시연 영상: https://youtube.com/shorts/o5p_Ng2fTxc?feature=share
 
 기술 스택
 ---
