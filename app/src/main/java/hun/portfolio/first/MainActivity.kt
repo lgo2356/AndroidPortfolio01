@@ -1,13 +1,12 @@
-package hun.portfolio.first.ui.login
+package hun.portfolio.first
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.core.view.WindowCompat
-import hun.portfolio.first.PortfolioApplication
 import hun.portfolio.first.ui.PortfolioApp
 
-class LoginActivity : ComponentActivity() {
+class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
