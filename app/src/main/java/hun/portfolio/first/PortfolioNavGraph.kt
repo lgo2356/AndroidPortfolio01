@@ -12,25 +12,25 @@ import androidx.navigation.navArgument
 import hun.portfolio.first.data.AppContainer
 import hun.portfolio.first.ui.chat.ChatRoute
 import hun.portfolio.first.ui.chat.ChatViewModel
-import hun.portfolio.first.ui.chatList.ChatListRoute
-import hun.portfolio.first.ui.chatList.ChatListViewModel
 import hun.portfolio.first.ui.login.LoginRoute
 import hun.portfolio.first.ui.login.LoginViewModel
+import hun.portfolio.first.ui.main.MainRoute
+import hun.portfolio.first.ui.main.MainViewModel
+import hun.portfolio.first.ui.main.chatList.ChatListViewModel
 
 @Composable
 fun PortfolioNavGraph(
     appContainer: AppContainer,
     navController: NavHostController = rememberNavController(),
-    navigateToChat: (Long) -> Unit = {},
-    navigateToChatList: () -> Unit = {},
-    startDestination: String = PortfolioDestination.HOME_ROUTE,
+    navigateToMain: () -> Unit = {},
+    navigateToChat: (Long) -> Unit = {}
 ) {
     NavHost(
         navController = navController,
-        startDestination = startDestination,
+        startDestination = NavDestination.WELCOME_ROUTE,
         modifier = Modifier
     ) {
-        composable(route = PortfolioDestination.HOME_ROUTE) {
+        composable(route = NavDestination.WELCOME_ROUTE) {
             val loginViewModel: LoginViewModel = viewModel(
                 factory = LoginViewModel.provideFactory(
                     userRepository = appContainer.userRepository,
@@ -39,26 +39,31 @@ fun PortfolioNavGraph(
 
             LoginRoute(
                 loginViewModel = loginViewModel,
-                navigateToChatList = navigateToChatList,
+                navigateToMain = navigateToMain,
             )
         }
 
-        composable(route = PortfolioDestination.CHAT_LIST_ROUTE) {
-            val viewModel: ChatListViewModel = viewModel(
+        composable(route = NavDestination.MAIN_ROUTE) {
+            val mainViewModel: MainViewModel = viewModel(
+                factory = MainViewModel.provideFactory()
+            )
+
+            val chatListViewModel: ChatListViewModel = viewModel(
                 factory = ChatListViewModel.provideFactory(
                     chatRepository = appContainer.chatRepository,
                     messageRepository = appContainer.messageRepository
                 )
             )
 
-            ChatListRoute(
-                viewModel = viewModel,
+            MainRoute(
+                mainViewModel = mainViewModel,
+                chatListViewModel = chatListViewModel,
                 navigateToChat = navigateToChat
             )
         }
 
         composable(
-            route = "${PortfolioDestination.CHAT_ROUTE}/{chatId}",
+            route = "${NavDestination.CHAT_ROUTE}/{chatId}",
             arguments = listOf(
                 navArgument("chatId") { type = NavType.LongType }
             )
@@ -68,7 +73,7 @@ fun PortfolioNavGraph(
             val chatViewModel: ChatViewModel = viewModel(
                 factory = ChatViewModel.provideFactory(
                     chatRepository = appContainer.chatRepository,
-                    messageRepository =  appContainer.messageRepository,
+                    messageRepository = appContainer.messageRepository,
                     chatId = chatId
                 )
             )

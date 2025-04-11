@@ -16,7 +16,7 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 
 sealed class LoginUiEvent {
-    data object NavigateToChatList : LoginUiEvent()
+    data object NavigateToMain : LoginUiEvent()
     data class ShowError(val message: String) : LoginUiEvent()
 }
 
@@ -28,7 +28,7 @@ class LoginViewModel(
 
     init {
         Firebase.auth.currentUser?.let {
-            viewModelScope.launch { _uiEvent.send(LoginUiEvent.NavigateToChatList) }
+            viewModelScope.launch { _uiEvent.send(LoginUiEvent.NavigateToMain) }
         }
     }
 
@@ -44,7 +44,7 @@ class LoginViewModel(
                         Firebase.auth.signInWithCredential(googleCredential)
                             .addOnCompleteListener { task ->
                                 if (task.isSuccessful) {
-                                    viewModelScope.launch { _uiEvent.send(LoginUiEvent.NavigateToChatList) }
+                                    viewModelScope.launch { _uiEvent.send(LoginUiEvent.NavigateToMain) }
                                 } else {
                                     Log.d("TAG", "Failure")
                                 }
@@ -62,10 +62,10 @@ class LoginViewModel(
             val profileImagePath = "guest_profile"
 
             if (userRepository.isExist(id)) {
-                _uiEvent.send(LoginUiEvent.NavigateToChatList)
+                _uiEvent.send(LoginUiEvent.NavigateToMain)
             } else {
                 if (userRepository.addUser(id, name)) {
-                    _uiEvent.send(LoginUiEvent.NavigateToChatList)
+                    _uiEvent.send(LoginUiEvent.NavigateToMain)
                 } else {
                     _uiEvent.send(LoginUiEvent.ShowError("error"))
                 }

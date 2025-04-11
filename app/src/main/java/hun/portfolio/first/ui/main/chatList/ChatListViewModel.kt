@@ -1,4 +1,4 @@
-package hun.portfolio.first.ui.chatList
+package hun.portfolio.first.ui.main.chatList
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider

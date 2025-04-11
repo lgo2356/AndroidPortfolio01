@@ -1,4 +1,4 @@
-package hun.portfolio.first.ui.chatList
+package hun.portfolio.first.ui.main.chatList
 
 import android.graphics.Bitmap
 import androidx.compose.foundation.Image
@@ -37,7 +37,6 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import hun.portfolio.first.R
-import hun.portfolio.first.ui.chat.ChannelAppBar
 import hun.portfolio.first.ui.chat.ChatUiState
 
 @Composable
@@ -47,11 +46,6 @@ fun ChatListScreen(
     onFloatingButtonClick: () -> Unit = {}
 ) {
     Scaffold(
-        topBar = {
-            ChannelAppBar(
-                title = "채팅 목록"
-            )
-        },
         floatingActionButton = { FloatingButton(onClick = onFloatingButtonClick) }) { paddingValue ->
 
         LazyColumn(
@@ -157,6 +151,7 @@ fun LifecycleObserver(viewModel: ChatListViewModel) {
                 Lifecycle.Event.ON_RESUME -> {
                     viewModel.refresh()
                 }
+
                 else -> {}
             }
         }

@@ -13,7 +13,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun LoginRoute(
     loginViewModel: LoginViewModel,
-    navigateToChatList: () -> Unit,
+    navigateToMain: () -> Unit,
 ) {
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
@@ -45,14 +45,14 @@ fun LoginRoute(
         onGoogleClick = { onGoogleClick() },
         onGuestClick = { loginViewModel.guestLogin() },
     ) {
-        navigateToChatList()
+        navigateToMain()
     }
 
     LaunchedEffect(key1 = true) {
         loginViewModel.uiEvent.collect { event ->
             when (event) {
-                is LoginUiEvent.NavigateToChatList -> {
-                    navigateToChatList()
+                is LoginUiEvent.NavigateToMain -> {
+                    navigateToMain()
                 }
 
                 is LoginUiEvent.ShowError -> {

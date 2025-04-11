@@ -1,4 +1,4 @@
-package hun.portfolio.first.ui.chatList
+package hun.portfolio.first.ui.main.chatList
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
