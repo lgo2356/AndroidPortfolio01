@@ -31,7 +31,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import hun.portfolio.first.R
 import hun.portfolio.first.ui.theme.GoogleWhite
-import hun.portfolio.first.ui.theme.KakaoYellow
 import hun.portfolio.first.ui.theme.NaverGreen
 
 @Composable
@@ -112,25 +111,6 @@ fun LoginButtonColumn(
                 .padding(vertical = 8.dp)
                 .clickable { onGuestClick() }
         )
-
-//        Spacer(modifier = Modifier.padding(vertical = 2.dp))
-//        LoginButton(
-//            text = "카카오톡 계정으로 로그인",
-//            textColor = Color.Black,
-//            backgroundColor = KakaoYellow,
-//            icon = R.drawable.kakaotalk_logo,
-//        ) {
-//
-//        }
-//        Spacer(modifier = Modifier.padding(vertical = 2.dp))
-//        LoginButton(
-//            text = "네이버 계정으로 로그인",
-//            textColor = Color.White,
-//            backgroundColor = NaverGreen,
-//            icon = R.drawable.naver_logo,
-//        ) {
-//
-//        }
     }
 }
 

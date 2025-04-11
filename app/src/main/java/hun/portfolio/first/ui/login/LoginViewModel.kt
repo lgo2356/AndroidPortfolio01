@@ -55,14 +55,6 @@ class LoginViewModel(
         }
     }
 
-    fun kakaoTalkLogin() {
-
-    }
-
-    fun naverLogin() {
-
-    }
-
     fun guestLogin() {
         viewModelScope.launch {
             val id = "guest_id"
