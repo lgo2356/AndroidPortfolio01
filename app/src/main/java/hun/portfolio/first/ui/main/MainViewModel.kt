@@ -14,10 +14,11 @@ class MainViewModel : ViewModel() {
     private val _uiState = MutableStateFlow(MainUiState("홈"))
     val uiState: StateFlow<MainUiState> = _uiState
 
+
     fun onSelectedBottomBarItem(index: Int) {
         when (index) {
             0 -> {
-                setTopBarText("홈")
+                setTopBarText("AI 검색")
             }
 
             1 -> {

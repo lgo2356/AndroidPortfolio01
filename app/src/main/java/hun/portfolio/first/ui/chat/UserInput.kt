@@ -1,15 +1,26 @@
 package hun.portfolio.first.ui.chat
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.Button
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -71,27 +82,51 @@ private fun UserInputText(
 ) {
     Row(
         modifier = Modifier
-            .background(color = Color.Gray)
             .fillMaxWidth()
             .height(48.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Box(Modifier.weight(1f)) {
-            UserInputTextField(
-                textFieldValue = textFieldValue,
-                onTextChanged = onTextChanged,
-                onTextFieldFocused = onTextFieldFocused,
-                keyboardType = keyboardType,
-                focusState = focusState,
-                onKeyboardDone = { onMessageSent(textFieldValue.text) },
-                modifier = Modifier.fillMaxWidth()
-            )
+        Surface(
+            shape = RoundedCornerShape(48.dp, 48.dp, 48.dp, 48.dp),
+            modifier = Modifier
+                .weight(1f)
+        ) {
+            Box(
+                contentAlignment = Alignment.CenterStart,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color.Gray)
+            ) {
+                BasicTextField(
+                    value = textFieldValue,
+                    onValueChange = onTextChanged,
+                    modifier = Modifier.fillMaxSize()
+                )
+            }
+
+//            UserInputTextField(
+//                textFieldValue = textFieldValue,
+//                onTextChanged = onTextChanged,
+//                onTextFieldFocused = onTextFieldFocused,
+//                keyboardType = keyboardType,
+//                focusState = focusState,
+//                onKeyboardDone = { onMessageSent(textFieldValue.text) },
+//                modifier = Modifier.fillMaxWidth()
+//            )
+
         }
+        Spacer(modifier = Modifier.padding(horizontal = 2.dp))
         Button(
             onClick = { onMessageSent(textFieldValue.text) },
-            modifier = Modifier
+            shape = CircleShape,
+            contentPadding = PaddingValues(0.dp),
+            modifier = Modifier.size(42.dp)
         ) {
-            Text("Send")
+            Image(
+                imageVector = Icons.Default.Check,
+                contentDescription = null
+            )
+//            Text("Send")
         }
     }
 }

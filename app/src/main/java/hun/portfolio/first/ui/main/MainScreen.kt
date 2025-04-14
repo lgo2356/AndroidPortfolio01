@@ -2,12 +2,13 @@ package hun.portfolio.first.ui.main
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
@@ -15,10 +16,11 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -30,6 +32,7 @@ import hun.portfolio.first.ui.chat.ChannelAppBar
 @Composable
 fun MainScreen(
     uiState: MainUiState,
+    searchRoute: @Composable () -> Unit,
     chatListRoute: @Composable () -> Unit,
     onSelectedItem: (Int) -> Unit
 ) {
@@ -40,20 +43,15 @@ fun MainScreen(
         topBar = { ChannelAppBar(title = uiState.topBarText) },
         bottomBar = { BottomNavigationBar(navController, onSelectedItem) }
     ) { paddingValue ->
-        Box(modifier = Modifier
-            .fillMaxSize()
-            .padding(paddingValue)
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValue)
         )
 
         val graph = navController.createGraph(NavDestination.MAIN_ROUTE) {
             composable(NavDestination.MAIN_ROUTE) {
-                Box(modifier = Modifier.fillMaxSize()) {
-                    Text(
-                        text = "홈",
-                        style = MaterialTheme.typography.labelLarge,
-                        modifier = Modifier.align(Alignment.Center)
-                    )
-                }
+                searchRoute()
             }
 
             composable(NavDestination.CHAT_LIST_ROUTE) {
@@ -76,8 +74,8 @@ fun BottomNavigationBar(
 ) {
     val navItems = listOf(
         MainNavItem(
-            title = "홈",
-            icon = Icons.Default.Home,
+            title = "AI 검색",
+            icon = Icons.Default.Search,
             route = NavDestination.MAIN_ROUTE
         ),
         MainNavItem(
@@ -89,7 +87,7 @@ fun BottomNavigationBar(
 
     val selectedNavIndex = rememberSaveable { mutableIntStateOf(0) }
 
-    NavigationBar {
+    NavigationBar(modifier = Modifier.height(112.dp)) {
         navItems.forEachIndexed { index, item ->
             NavigationBarItem(
                 selected = selectedNavIndex.intValue == index,
@@ -101,9 +99,18 @@ fun BottomNavigationBar(
                     navController.navigate(item.route)
                 },
                 icon = {
-                    Icon(imageVector = item.icon, contentDescription = item.title)
+                    Icon(
+                        imageVector = item.icon,
+                        contentDescription = item.title,
+                        modifier = Modifier.size(18.dp)
+                    )
                 },
-                label = { Text(item.title) }
+                label = {
+                    Text(
+                        text = item.title,
+                        fontSize = 10.sp
+                    )
+                }
             )
         }
     }
@@ -118,10 +125,11 @@ data class MainNavItem(
 @Preview
 @Composable
 fun MainScreenPreview() {
-    val uiState = MainUiState(topBarText = "홈")
+    val uiState = MainUiState(topBarText = "AI 검색")
 
     MainScreen(
         uiState = uiState,
+        searchRoute = {},
         chatListRoute = {},
         onSelectedItem = {}
     )
